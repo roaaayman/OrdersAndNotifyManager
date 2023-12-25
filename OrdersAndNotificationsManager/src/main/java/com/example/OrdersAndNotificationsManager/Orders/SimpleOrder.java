@@ -24,10 +24,18 @@ public class SimpleOrder implements Order {
     public String placeorder(List<String> ProductName) {
         List<Products> productss= DummyProductList.getDummyProducts();
         for (String productName: ProductName) {
+            boolean productFound=false;
             for (Products p:productss) {
                 if(p.getName().equals(productName))
-                {products.add(p);}
+                {products.add(p);
+                    productFound=true;
+                    break;
+                }
 
+            }
+            if(!productFound)
+            {
+                return "Product not available:"+productName;
             }
 
         }
