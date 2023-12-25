@@ -1,6 +1,7 @@
 package com.example.OrdersAndNotificationsManager.Orders;
 
 import com.example.OrdersAndNotificationsManager.Customers.Customer;
+import com.example.OrdersAndNotificationsManager.Products.DummyProductList;
 import com.example.OrdersAndNotificationsManager.Products.Products;
 
 import java.util.ArrayList;
@@ -20,15 +21,38 @@ public class SimpleOrder implements Order {
     }
 
     @Override
-    public void placeorder() {
+    public String placeorder(List<String> ProductName) {
+        List<Products> productss= DummyProductList.getDummyProducts();
+        for (String productName: ProductName) {
+            Products product=findProductByName(productss,productName);
+            if(product!=null)
+            {
+                products.add(product);
+            }
+
+        }
         double total = calculateTotal();
-        customer.setBalance(customer.getBalance() - total);
-        System.out.println("Simple order placed!");
+        if(customer.getBalance()>=total)
+        {
+            customer.setBalance(customer.getBalance()-total);
+            return "simple order placed";
+        }
+        else
+        {
+            return "no enough balance";
+        }
+
+    }
+    public Products findProductByName(List<Products> products, String productName) {
+        for (Products product : products) {
+            if (product.getName().equalsIgnoreCase(productName)) {
+                return product;
+            }
+        }
+        return null;
     }
 
-    public void addProduct(Products product) {
-        products.add(product);
-    }
+
 
     public void setShippingFee(double shippingFee) {
         this.shippingFee = shippingFee;
@@ -39,7 +63,7 @@ public class SimpleOrder implements Order {
         for (Products product : products) {
             total += product.getPrice();
         }
-        return total + shippingFee;
+        return total;
     }
 
 }

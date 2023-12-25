@@ -17,11 +17,12 @@ public class CompoundOrder implements Order {
     }
 
     @Override
-    public void placeorder() {
+    public String placeorder(List<String> ProductName) {
         System.out.println("Placing compound order to location:"+location);
         for (Order order : orders) {
-            order.placeorder();
+            order.placeorder(ProductName);
         }
 
+        return null;
     }
 }
