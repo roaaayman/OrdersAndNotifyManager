@@ -20,8 +20,5 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/products/countByCategory")
-    public Map<String, Long> countPartsByCategory() {
-        return productService.countPartsByCategory();
-    }
+    
 }

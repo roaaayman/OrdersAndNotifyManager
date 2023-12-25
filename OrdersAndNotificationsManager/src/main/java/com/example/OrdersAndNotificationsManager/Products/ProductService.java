@@ -17,12 +17,5 @@ public class ProductService {
         return productList;
     }
 
-    public Map<String, Long> countPartsByCategory() {
-        Map<String, Long> partsByCategory = new HashMap<>();
-        for (Products product : productList) {
-            String category = product.getCategory();
-            partsByCategory.put(category, partsByCategory.getOrDefault(category, 0L) + 1);
-        }
-        return partsByCategory;
-    }
+
 }

@@ -6,13 +6,15 @@ public class Products {
     private String vendor;
     private String category;
     private double price;
+    private int countparts;
     // Constructor
-    public Products(int serialNumber, String name, String vendor, String category, double price) {
+    public Products(int serialNumber, String name, String vendor, String category, double price,int countparts) {
         this.serialNumber = serialNumber;
         this.name = name;
         this.vendor = vendor;
         this.category = category;
         this.price = price;
+        this.countparts=countparts;
     }
 
 
