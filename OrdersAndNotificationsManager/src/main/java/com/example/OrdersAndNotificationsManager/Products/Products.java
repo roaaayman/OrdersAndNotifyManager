@@ -7,20 +7,14 @@ public class Products {
     private String category;
     private double price;
     private int countparts;
-
-    private int quantity;
-
-    private int availableQuantity;
-
     // Constructor
-    public Products(int serialNumber, String name, String vendor, String category, double price,int countparts , int availableQuantity) {
+    public Products(int serialNumber, String name, String vendor, String category, double price,int countparts) {
         this.serialNumber = serialNumber;
         this.name = name;
         this.vendor = vendor;
         this.category = category;
         this.price = price;
         this.countparts=countparts;
-        this.availableQuantity=availableQuantity;
     }
 
 
@@ -44,12 +38,6 @@ public class Products {
     public void setPrice(double price) {
         this.price = price;
     }
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-    public void setAvailableQuantity(int availableQuantity) {
-        this.availableQuantity = availableQuantity;
-    }
 
     // Getters
     public int getSerialNumber() {
@@ -70,11 +58,5 @@ public class Products {
 
     public double getPrice() {
         return price;
-    }
-    public int getQuantity() {
-        return quantity;
-    }
-    public int getAvailableQuantity() {
-        return availableQuantity;
     }
 }
