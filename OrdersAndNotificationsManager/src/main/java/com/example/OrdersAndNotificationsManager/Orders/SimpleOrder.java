@@ -24,10 +24,10 @@ public class SimpleOrder implements Order {
     public String placeorder(List<String> ProductName) {
         List<Products> productss= DummyProductList.getDummyProducts();
         for (String productName: ProductName) {
-            Products product=findProductByName(productss,productName);
-            if(product!=null)
-            {
-                products.add(product);
+            for (Products p:productss) {
+                if(p.getName().equals(productName))
+                {products.add(p);}
+
             }
 
         }
@@ -43,15 +43,6 @@ public class SimpleOrder implements Order {
         }
 
     }
-    public Products findProductByName(List<Products> products, String productName) {
-        for (Products product : products) {
-            if (product.getName().equalsIgnoreCase(productName)) {
-                return product;
-            }
-        }
-        return null;
-    }
-
 
 
     public void setShippingFee(double shippingFee) {
