@@ -39,6 +39,9 @@ public class SimpleOrder implements Order {
                     if (quantity > 0 && quantity <= product.getAvailableQuantity()) {
                         product.setQuantity(quantity);
                         products.add(product);
+                        int remainingQuantity = product.getAvailableQuantity() - quantity;
+                        product.setAvailableQuantity(remainingQuantity);
+                        System.out.println("Remaining quantity of " + productName + ": " + remainingQuantity);
                     } else {
                         System.out.println("Invalid quantity or not enough stock!");
                     }
