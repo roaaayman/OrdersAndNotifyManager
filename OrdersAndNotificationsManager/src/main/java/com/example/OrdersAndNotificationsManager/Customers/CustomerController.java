@@ -3,6 +3,10 @@ package com.example.OrdersAndNotificationsManager.Customers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerController {
@@ -15,28 +19,30 @@ public class CustomerController {
     }
 
     @PostMapping("/create")
-    public Customer createAccount(@RequestParam String email, @RequestParam String password, @RequestParam double balance, @RequestParam String Location) {
-        Customer existingCustomer = customerService.checkCustomer(email, password);
-
-        if (existingCustomer != null) {
-            // Handle the case where the email is already registered (e.g., return an error response)
-            System.out.println("Email already registered");
-            return null;
+    public String createAccount(@RequestBody Customer customer) {
+        if(customerService.checkemailUniqueness(customer.getEmail()))
+        {
+            customerService.createAccount(customer);
+            return "account created successfully";
+        }
+        else if(!customerService.checkemailUniqueness(customer.getEmail())){
+            return "email already registered";
         }
 
-        // Create a new customer account
-        return customerService.createCustomer(email, password, balance,Location);
+        return null;
     }
 
-    @GetMapping("/check")
-    public Customer checkUser(@RequestParam String email, @RequestParam String password) {
-        // Logic to check if the user exists and return user info if exists
-        return customerService.checkCustomer(email, password);
+
+
+    @GetMapping("/check/{email}")
+    public Customer checkUser(@PathVariable("email") String email) {
+       return customerService.getCustomerByEmail(email);
     }
 
     @PutMapping("/{email}/balance")
-    public Customer updateBalance(@PathVariable String email, @RequestParam double balance) {
+    public String updateBalance(@PathVariable String email, @RequestBody double balance) {
         // Logic to update the balance of a customer
-        return customerService.updateBalance(email, balance);
+         customerService.updateBalance(email, balance);
+         return "Balance updated to "+balance;
     }
 }

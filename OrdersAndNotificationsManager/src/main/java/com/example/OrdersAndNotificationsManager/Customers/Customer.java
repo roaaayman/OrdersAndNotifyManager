@@ -15,10 +15,10 @@ public class Customer {
         this.location = location;
     }
 
-    public Customer(String email, String password, double balance, String location) {
+    public Customer(String email, String password,  String location) {
         this.password=password;
         this.email=email;
-        this.balance = balance;
+        this.location=location;
     }
 
     public String getEmail() {

@@ -12,30 +12,18 @@ public class CustomerService {
     private List<Customer> customerList = new ArrayList<>();
 
     // Method to create a new customer account
-    public Customer createCustomer(String email, String password, double balance,String Location) {
-
-        for (Customer customer:customerList) {
-            if(customer.getEmail()==email)
-            {
-                System.out.println("email already registered");
-            }
-        }
-
-        Customer customer = new Customer(email, password, balance,Location);
-        customerList.add(customer);
-
-        return customer;
+    public void createAccount(Customer c) {
+        customerList.add(c);
     }
 
+
     // Method to check if the user exists and return user info if exists
-    public Customer checkCustomer(String email, String password) {
+    public Customer getCustomerByEmail(String email) {
         for (Customer customer : customerList) {
-            if (customer.getEmail().equals(email) && customer.getPassword().equals(password)) {
+            if (customer.getEmail().equals(email)) {
                 return customer;
             }
         }
-
-        // Return null or throw an exception based on your error handling strategy
         return null;
     }
 
@@ -53,12 +41,14 @@ public class CustomerService {
         }
     }
 
-    private Customer getCustomerByEmail(String email) {
+    public boolean checkemailUniqueness(String email) {
         for (Customer customer : customerList) {
-            if (customer.getEmail().equals(email)) {
-                return customer;
+            if (customer.getEmail() .equals( email)) {
+                return false;
             }
         }
-        return null;
+        return true;
+
     }
+
 }
