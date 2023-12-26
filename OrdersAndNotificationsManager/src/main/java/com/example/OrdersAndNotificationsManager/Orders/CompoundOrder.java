@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 class CompoundOrder implements Order {
-    private List<SimpleOrder> orders; // Store multiple simple orders in a compound order
-    private double shippingFee;
-
+    private List<SimpleOrder> orders;
     private List<Customer> customers;
+    private double shippingFee;
 
     public CompoundOrder(List<Customer> customers) {
         this.customers = new ArrayList<>();
@@ -33,8 +32,23 @@ class CompoundOrder implements Order {
 
         // Split the productName list to determine products for the main customer and friends
         List<String> mainCustomerProducts = ProductName.subList(0, 2);
-        List<List<String>> friendsProducts = new ArrayList<>();
-        friendsProducts.add(ProductName.subList(2, friendsProducts.size()));
+
+        // Loop through the product names and assign to each friend directly
+        int friendIndex = 0;
+        for (int i = 2; i < ProductName.size(); i += 2) {
+            Customer friend = friends.get(friendIndex);
+            List<String> friendProducts = ProductName.subList(i, i + 2);
+
+            SimpleOrder friendOrder = new SimpleOrder(friend);
+            String friendOrderResult = friendOrder.placeorder(friendProducts);
+
+            // Check the result of placing the friend's order
+            if (!friendOrderResult.equals("simple order placed")) {
+                return friendOrderResult; // Return an error message if placing the friend's order fails
+            }
+            orders.add(friendOrder);
+            friendIndex++;
+        }
 
         // Create a simple order for the main customer
         SimpleOrder mainCustomerOrder = new SimpleOrder(mainCustomer);
@@ -45,22 +59,31 @@ class CompoundOrder implements Order {
         }
         orders.add(mainCustomerOrder);
 
-        // Create simple orders for friends and add them to the compound order
-        for (int i = 0; i < friends.size(); i++) {
-            Customer friend = friends.get(i);
-            List<String> friendProducts = friendsProducts.get(i);
+        List<Double> OrderAmount = calculateOrder(mainCustomer, friends);
 
-            SimpleOrder friendOrder = new SimpleOrder(friend);
-            String friendOrderResult = friendOrder.placeorder(friendProducts);
-
-            // Check the result of placing the friend's order
-            if (!friendOrderResult.equals("simple order placed")) {
-                return friendOrderResult; // Return an error message if placing the friend's order fails
+        // Deduct balance from each account
+        for (int i = 0; i < orders.size(); i++) {
+            Customer c;
+            if (i == orders.size() - 1) {
+                c = mainCustomer;
+            } else {
+                c = friends.get(i);
             }
-            orders.add(friendOrder);
+            double orderCost = OrderAmount.get(i);
+            c.setBalance(c.getBalance() - orderCost); // Deduct from each customer's balance
         }
 
         return "Compound order placed";
+    }
+
+    // Calculate Order's cost for each customer individually
+    private List<Double> calculateOrder(Customer mainCustomer, List<Customer> friends) {
+        List<Double> individualOrderCost = new ArrayList<>();
+        for (SimpleOrder order : orders) {
+            double orderCost = order.calculateTotal(); // Calculate the cost of each order
+            individualOrderCost.add(orderCost);
+        }
+        return individualOrderCost;
     }
 
     public double calculateTotal() {
