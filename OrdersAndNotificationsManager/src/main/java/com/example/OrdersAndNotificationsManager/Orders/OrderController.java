@@ -41,15 +41,48 @@ public class OrderController {
 
 
     // API endpoint to place a compound order
-    /*@PostMapping("/compound")
-    public ResponseEntity<String> placeCompoundOrder(@RequestBody List<String> productNames) {
-        CompoundOrder compoundOrder = new CompoundOrder();
-        for (String productName : productNames) {
-            Order simpleOrder = new SimpleOrder(productName);
-            compoundOrder.addOrder(simpleOrder);
+    @PostMapping("/compound")
+    public String placeCompoundOrder(
+            @RequestParam String customerEmail,
+            @RequestParam List<String> friendEmails,
+            @RequestParam List<String> productNames
+    ) {
+        // Check if the customer exists
+        Customer customer = customerService.getCustomerByEmail(customerEmail);
+        if (customer == null) {
+            return "Customer email not available";
         }
-        orderService.placeOrder(compoundOrder);
-        return ResponseEntity.ok("Compound order placed successfully.");
-    }*/
+
+        // Create a compound order
+        CompoundOrder compoundOrder = new CompoundOrder();
+
+        // Create and add a simple order for the customer
+        SimpleOrder customerOrder = new SimpleOrder(customer);
+        compoundOrder.addSimpleOrder(customerOrder);
+
+        // Add simple orders for friends
+        for (String friendEmail : friendEmails) {
+            // Check if the friend customer exists
+            Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
+            if (friendCustomer == null) {
+                return "Friend email not available: " + friendEmail;
+            }
+
+            // Check if the friend's location matches the customer's location (you may need a method for this)
+            if (!friendCustomer.getLocation().equals(customer.getLocation())) {
+                return "Friend " + friendEmail + " has a different location than the customer";
+            }
+
+            // Create and add a simple order for the friend
+            SimpleOrder friendOrder = new SimpleOrder(friendCustomer);
+            compoundOrder.addSimpleOrder(friendOrder);
+        }
+
+        // Set shipping fee for the compound order (you may implement logic to calculate shipping fee)
+
+        // Place the compound order
+        return orderService.placeOrder(compoundOrder, productNames);
+    }
+
 }
 
