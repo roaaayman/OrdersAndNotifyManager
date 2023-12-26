@@ -6,6 +6,15 @@ public class Customer {
     private String password;
     private double balance;
     private String location;
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getLocation() {
         return location;
@@ -15,10 +24,11 @@ public class Customer {
         this.location = location;
     }
 
-    public Customer(String email, String password,  String location) {
+    public Customer(String email, String password,  String location,String address) {
         this.password=password;
         this.email=email;
         this.location=location;
+        this.address=address;
     }
 
     public String getEmail() {
