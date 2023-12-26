@@ -33,7 +33,7 @@ public class CustomerService {
         Customer customer = getCustomerByEmail(email);
 
         if (customer != null) {
-            customer.setBalance(balance);
+            customer.setBalance(balance+customer.getBalance());
             return customer;
         } else {
             // Return null or throw an exception based on your error handling strategy
