@@ -25,6 +25,12 @@ class CompoundOrder implements Order {
         Customer mainCustomer = customers.get(0);
         List<Customer> friends = customers.subList(1, customers.size());
 
+        for (Customer customer : customers) {
+            if (!customer.getLocation().equals(mainCustomer.getLocation())) {
+                return "Customers must have the same location as the main customer";
+            }
+        }
+
         // Split the productName list to determine products for the main customer and friends
         List<String> mainCustomerProducts = ProductName.subList(0, 2);
         List<List<String>> friendsProducts = new ArrayList<>();
@@ -53,7 +59,6 @@ class CompoundOrder implements Order {
             }
             orders.add(friendOrder);
         }
-
 
         return "Compound order placed";
     }
