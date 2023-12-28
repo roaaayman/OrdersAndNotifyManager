@@ -61,10 +61,9 @@ public class OrderController {
         CompoundOrder compoundOrder = new CompoundOrder();
 
         // Add a simple order for the main customer with the specified product names
-        SimpleOrder mainCustomerOrder = new SimpleOrder(mainCustomer);
-        compoundOrder.addSimpleOrder(mainCustomerOrder);
 
 
+        boolean allFriendsAvailable = true;
 
         // Add simple orders for friends with their specified product names
         for (int i = 0; i < friendEmails.size(); i++) {
@@ -73,34 +72,44 @@ public class OrderController {
 
             // Check if the friend customer exists
             Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
-            if (friendCustomer == null) {
+            if (friendCustomer == null ) {
                 results.add("Friend email not available: " + friendEmail);
-                continue;
+                allFriendsAvailable=false;
+                break;
             }
 
             // Check if the friend's location matches the main customer's location
-            if (!friendCustomer.getLocation().equals(mainCustomer.getLocation())) {
+             if (!friendCustomer.getLocation().equals(mainCustomer.getLocation())) {
                 results.add("Friend " + friendEmail + " has a different location than the customer");
-                continue;
+                allFriendsAvailable=false;
+                break;
             }
 
-            // Create and add a simple order for the friend
-            SimpleOrder friendOrder = new SimpleOrder(friendCustomer);
-            compoundOrder.addSimpleOrder(friendOrder);
+             if(allFriendsAvailable)
+            {
+                // Create and add a simple order for the friend
+                SimpleOrder friendOrder = new SimpleOrder(friendCustomer);
+                compoundOrder.addSimpleOrder(friendOrder);
 
-            // Place the specified products in the order for the friend
-            String friendResult = orderService.placeOrder(friendOrder, friendProductList);
-            results.add("Friend " + friendEmail + ": " + friendResult);
+                // Place the specified products in the order for the friend
+                String friendResult = orderService.placeOrder(friendOrder, friendProductList);
+                results.add("Friend " + friendEmail + ": " + friendResult);
+            }
+
         }
 
-        // Place the compound order for the main customer with the specified product names
-        String mainCustomerResult = orderService.placeOrder(mainCustomerOrder, customerProductNames);
-        results.add("Main Customer: " + mainCustomerResult);
+        if(allFriendsAvailable) {
+            for(SimpleOrder friendOrder : frie)
+            SimpleOrder mainCustomerOrder = new SimpleOrder(mainCustomer);
+            compoundOrder.addSimpleOrder(mainCustomerOrder);
+            // Place the compound order for the main customer with the specified product names
+            String mainCustomerResult = orderService.placeOrder(mainCustomerOrder, customerProductNames);
+            results.add("Main Customer: " + mainCustomerResult);
 
-        // Place the compound order
-        String compoundOrderResult = orderService.placeOrder(compoundOrder,customerProductNames);
-        results.add("Compound Order: " + compoundOrderResult);
-
+            // Place the compound order
+            String compoundOrderResult = orderService.placeOrder(compoundOrder, customerProductNames);
+            results.add("Compound Order: " + compoundOrderResult);
+        }
         return results;
     }
 }
