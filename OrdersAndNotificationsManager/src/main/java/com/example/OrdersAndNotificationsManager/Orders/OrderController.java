@@ -64,16 +64,18 @@ public class OrderController {
 
 
         boolean allFriendsAvailable = true;
+        List<SimpleOrder> friendOrders = new ArrayList<>();
 
         // Add simple orders for friends with their specified product names
         for (int i = 0; i < friendEmails.size(); i++) {
             String friendEmail = friendEmails.get(i);
-            List<String> friendProductList = friendProductNames.get(i);
+
 
             // Check if the friend customer exists
             Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
-            if (friendCustomer == null ) {
-                results.add("Friend email not available: " + friendEmail);
+            if (friendCustomer == null )
+            {
+                results.add("Friend email not available : " + friendEmail);
                 allFriendsAvailable=false;
                 break;
             }
@@ -85,21 +87,22 @@ public class OrderController {
                 break;
             }
 
-             if(allFriendsAvailable)
-            {
-                // Create and add a simple order for the friend
-                SimpleOrder friendOrder = new SimpleOrder(friendCustomer);
-                compoundOrder.addSimpleOrder(friendOrder);
-
-                // Place the specified products in the order for the friend
-                String friendResult = orderService.placeOrder(friendOrder, friendProductList);
-                results.add("Friend " + friendEmail + ": " + friendResult);
-            }
 
         }
 
         if(allFriendsAvailable) {
-            for(SimpleOrder friendOrder : frie)
+
+            for(int i=0;i<friendEmails.size();i++)
+            {
+                List<String> friendProductList = friendProductNames.get(i);
+                String friendEmail = friendEmails.get(i);
+                Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
+                SimpleOrder friendOrder=new SimpleOrder(friendCustomer);
+                compoundOrder.addSimpleOrder(friendOrder);
+                String friendResult = orderService.placeOrder(friendOrder, friendProductList);
+                results.add("Friend " + friendEmail + ": " + friendResult);
+            }
+
             SimpleOrder mainCustomerOrder = new SimpleOrder(mainCustomer);
             compoundOrder.addSimpleOrder(mainCustomerOrder);
             // Place the compound order for the main customer with the specified product names
