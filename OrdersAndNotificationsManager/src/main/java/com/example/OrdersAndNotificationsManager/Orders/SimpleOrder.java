@@ -24,14 +24,12 @@ public class SimpleOrder implements Order {
     public String placeorder(List<String> ProductName) {
         List<Products> productss = DummyProductList.getDummyProducts();
         List<String> purchasedproducts = new ArrayList<>();
-        List<Double> prices = new ArrayList<>();
         for (String productName : ProductName) {
             boolean productFound = false;
             for (Products p : productss) {
                 if (p.getName().equals(productName)) {
                     products.add(p);
                     purchasedproducts.add(productName);
-                    prices.add(p.getPrice());
                     productFound = true;
                     break;
 
@@ -47,14 +45,10 @@ public class SimpleOrder implements Order {
         double total = calculateTotal();
         if (customer.getBalance() >= total) {
             customer.setBalance(customer.getBalance() - total - shippingFee);
-
-            return "Products purchased:"+purchasedproducts+"deducted price " + total + "and shipping fees " + shippingFee + "simple order placed";
-
-
+            return "purchased products"
         } else {
-            return "no enough balance";
+            return "No enough balance";
         }
-
     }
 
 
