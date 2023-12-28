@@ -23,13 +23,13 @@ public class SimpleOrder implements Order {
     @Override
     public String placeorder(List<String> ProductName) {
         List<Products> productss = DummyProductList.getDummyProducts();
-        List<String> purchasedproducts = new ArrayList<>();
+        List<String> addedproducts = new ArrayList<>();
         for (String productName : ProductName) {
             boolean productFound = false;
             for (Products p : productss) {
                 if (p.getName().equals(productName)) {
                     products.add(p);
-                    purchasedproducts.add(productName);
+                    addedproducts.add(productName);
                     productFound = true;
                     break;
 
@@ -45,7 +45,8 @@ public class SimpleOrder implements Order {
         double total = calculateTotal();
         if (customer.getBalance() >= total) {
             customer.setBalance(customer.getBalance() - total - shippingFee);
-            return "purchased products"
+            return "Purchased products: "+String.join(",", addedproducts) +
+                    "\nTotal Deducted Amount: " + total + "  shipping fee " + shippingFee ;
         } else {
             return "No enough balance";
         }
