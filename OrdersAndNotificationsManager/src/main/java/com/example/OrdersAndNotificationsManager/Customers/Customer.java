@@ -1,5 +1,11 @@
 package com.example.OrdersAndNotificationsManager.Customers;
 
+import com.example.OrdersAndNotificationsManager.Orders.CompoundOrder;
+import com.example.OrdersAndNotificationsManager.Orders.SimpleOrder;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Customer {
 
     private String email;
@@ -7,6 +13,9 @@ public class Customer {
     private double balance;
     private String location;
     private String address;
+    private List<SimpleOrder> simpleOrders = new ArrayList<>();
+    private List<CompoundOrder> compoundOrders = new ArrayList<>();
+
 
     public String getAddress() {
         return address;
@@ -56,5 +65,20 @@ public class Customer {
         this.balance = balance;
     }
 
+    public List<SimpleOrder> getSimpleOrders() {
+        return simpleOrders;
+    }
+
+    public List<CompoundOrder> getCompoundOrders() {
+        return compoundOrders;
+    }
+
+    public void addSimpleOrder(SimpleOrder order) {
+        simpleOrders.add(order);
+    }
+
+    public void addCompoundOrder(CompoundOrder order) {
+        compoundOrders.add(order);
+    }
 
 }

@@ -32,6 +32,7 @@ public class OrderController {
             return "email not available";
         }
         SimpleOrder simpleOrder = new SimpleOrder(customer);
+        customer.addSimpleOrder(simpleOrder);
         return orderService.placeOrder(simpleOrder, productNames);
     }
 
@@ -51,14 +52,10 @@ public class OrderController {
             return Collections.singletonList("main customer not available");
         }
 
+        int numberOfCustomers= friendEmails.size()+1;
         // Create a compound order
         CompoundOrder compoundOrder = new CompoundOrder();
-
-        // Add a simple order for the main customer with the specified product names
-
-
         boolean allFriendsAvailable = true;
-        List<SimpleOrder> friendOrders = new ArrayList<>();
 
         // Add simple orders for friends with their specified product names
         for (int i = 0; i < friendEmails.size(); i++) {
@@ -92,16 +89,16 @@ public class OrderController {
                 String friendEmail = friendEmails.get(i);
                 Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
                 SimpleOrder friendOrder=new SimpleOrder(friendCustomer);
-                compoundOrder.addSimpleOrder(friendOrder);
                 String friendResult = orderService.placeOrder(friendOrder, friendProductList);
+                friendCustomer.addSimpleOrder(friendOrder);
+                compoundOrder.addSimpleOrder(friendOrder);
                 results.add("Friend " + friendEmail + ": " + friendResult);
             }
 
 
             SimpleOrder mainCustomerOrder = new SimpleOrder(mainCustomer);
-            compoundOrder.addSimpleOrder(mainCustomerOrder);
-            // Place the compound order for the main customer with the specified product names
             String mainCustomerResult = orderService.placeOrder(mainCustomerOrder, customerProductNames);
+            compoundOrder.addSimpleOrder(mainCustomerOrder);
             results.add("Main Customer: " + mainCustomerResult);
 
             List<String> finalProducts = new ArrayList<>();
@@ -113,10 +110,33 @@ public class OrderController {
 
             finalProducts.addAll(customerProductNames);
 
-            // Place the compound order
+
+
             String compoundOrderResult = orderService.placeOrder(compoundOrder, finalProducts);
             results.add("Compound Order: " + compoundOrderResult);
+
+            mainCustomer.addCompoundOrder(compoundOrder);
+
         }
         return results;
+    }
+    @GetMapping("/getorder/{email}")
+    public List<String> getOrdersForCustomer(@PathVariable String email) {
+        Customer customer = customerService.getCustomerByEmail(email);
+        if (customer == null) {
+            return Collections.singletonList("Customer not found");
+        }
+
+        List<String> orders = new ArrayList<>();
+        List<SimpleOrder> simpleOrders = customer.getSimpleOrders();
+        for (SimpleOrder simpleOrder : simpleOrders) {
+            orders.add( simpleOrder.getOrderDetails());
+        }
+        List<CompoundOrder> compoundOrders = customer.getCompoundOrders();
+        for (CompoundOrder compoundOrder : compoundOrders) {
+            orders.add("Compound Order: " + compoundOrder.getOrderDetails());
+        }
+
+        return orders;
     }
 }

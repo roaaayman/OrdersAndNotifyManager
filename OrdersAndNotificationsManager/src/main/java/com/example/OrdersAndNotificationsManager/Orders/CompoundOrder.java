@@ -1,20 +1,18 @@
 package com.example.OrdersAndNotificationsManager.Orders;
 
+import com.example.OrdersAndNotificationsManager.Customers.Customer;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CompoundOrder implements Order {
     private List<SimpleOrder> orders = new ArrayList<>();
 
-    private String location;
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public void addSimpleOrder(SimpleOrder order) {
         orders.add(order);
     }
+
 
     @Override
     public String placeorder(List<String> ProductName) {
@@ -27,5 +25,14 @@ public class CompoundOrder implements Order {
             }
         }
         return "compound order placed";
+    }
+    public String getOrderDetails() {
+        String orderDetails = "Compound Order of main customer and friends Orders:";
+
+        for (SimpleOrder order : orders) {
+            orderDetails += order.getOrderDetails() + ",";
+        }
+
+        return orderDetails;
     }
 }
