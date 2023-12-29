@@ -31,13 +31,7 @@ public class OrderController {
         if (customer == null) {
             return "email not available";
         }
-
-        // Create a simple order
         SimpleOrder simpleOrder = new SimpleOrder(customer);
-        // simpleOrder.setShippingFee(shippingFee);
-
-        // Place the order
-
         return orderService.placeOrder(simpleOrder, productNames);
     }
 

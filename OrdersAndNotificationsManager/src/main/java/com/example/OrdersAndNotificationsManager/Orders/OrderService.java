@@ -14,16 +14,5 @@ public class OrderService {
         String result = order.placeorder(productNames);
         return result;
     }
-    public List<String> listOrdersForCustomer(String customerEmail) {
-        List<String> orders = new ArrayList<>();
-        List<String> simpleOrders = listSimpleOrdersForCustomer(customerEmail);
-        orders.addAll(simpleOrders);
-        List<String> compoundOrders = listCompoundOrdersForCustomer(customerEmail);
-        orders.addAll(compoundOrders);
-         return orders;
-    }
-    public List<String> listSimpleOrdersForCustomer(String customerEmail) {
-        List<String> simpleOrders = new ArrayList<>();
-        return simpleOrders;
-    }
+
 }
