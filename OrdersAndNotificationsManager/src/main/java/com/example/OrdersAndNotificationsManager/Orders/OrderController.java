@@ -2,13 +2,12 @@ package com.example.OrdersAndNotificationsManager.Orders;
 
 import com.example.OrdersAndNotificationsManager.Customers.Customer;
 import com.example.OrdersAndNotificationsManager.Customers.CustomerService;
+import com.example.OrdersAndNotificationsManager.Notifications.Notification;
+import com.example.OrdersAndNotificationsManager.Notifications.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -16,11 +15,13 @@ public class OrderController {
 
     private final OrderService orderService;
     private final CustomerService customerService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public OrderController(OrderService orderService, CustomerService customerService) {
+    public OrderController(OrderService orderService, CustomerService customerService, NotificationService notificationService) {
         this.orderService = orderService;
         this.customerService = customerService;
+        this.notificationService = notificationService;
     }
 
     // API endpoint to place a simple order
@@ -33,7 +34,24 @@ public class OrderController {
         }
         SimpleOrder simpleOrder = new SimpleOrder(customer);
         customer.addSimpleOrder(simpleOrder);
-        return orderService.placeOrder(simpleOrder, productNames);
+        String result= orderService.placeOrder(simpleOrder, productNames);
+        // If the order is successfully placed, send a notification
+        if (result.equals("Order placed successfully")) {
+            String templateId = "order_placement_template"; // Template ID for order placement
+            List<String> productList = productNames; // Assuming productNames is a list of strings
+            Notification notification = createOrderNotification(customer.getEmail(), templateId, productList);
+            notificationService.sendNotification(notification);
+        }
+        return result;
+    }
+
+    // Helper method to create an order notification
+    private Notification createOrderNotification(String recipient, String templateId, List<String> productNames) {
+         templateId = "order_placement_template"; // Template ID for order placement
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("{x}", recipient); // Replace with recipient's name or email
+        placeholders.put("{y}", String.join(", ", productNames)); // Join the product names
+        return new Notification(recipient, templateId, placeholders);
     }
 
 

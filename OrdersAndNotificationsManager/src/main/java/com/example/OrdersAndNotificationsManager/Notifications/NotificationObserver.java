@@ -1,5 +1,5 @@
 package com.example.OrdersAndNotificationsManager.Notifications;
 
 public interface NotificationObserver {
-    void update(Notification notification);
+    void update(String notification);
 }
