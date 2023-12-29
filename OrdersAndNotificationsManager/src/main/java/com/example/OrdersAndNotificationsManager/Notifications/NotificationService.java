@@ -23,8 +23,18 @@ public class NotificationService implements NotificationSubject {
         }
     }
 
+    public void addTemplate(String templateId, String templateText) {
+        templates.put(templateId, templateText);
+    }
+
     public void sendNotification(Notification notification) {
-        // Send notification logic
-        notifyObservers(notification);
+        String template = templates.get(notification.getTemplateId());
+        if (template != null) {
+            String message = notification.generateMessage(template);
+            // Logic to send the message through various channels (email, SMS, etc.)
+            notifyObservers(notification); // Notify observers with the prepared notification
+        } else {
+            System.out.println("Template not found for the provided templateId");
+        }
     }
 }
