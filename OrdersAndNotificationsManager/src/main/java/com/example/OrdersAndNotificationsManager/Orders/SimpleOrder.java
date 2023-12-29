@@ -46,7 +46,7 @@ public class SimpleOrder implements Order {
         if (customer.getBalance() >= total) {
             customer.setBalance(customer.getBalance() - total - shippingFee);
             return "Purchased products: "+String.join(",", addedproducts) +
-                    "\nTotal Deducted Amount: " + total + "  shipping fee " + shippingFee ;
+                    "\nTotal Deducted Amount: " + total + "  shipping fee " + shippingFee+"\n" ;
         } else {
             return "No enough balance";
         }
