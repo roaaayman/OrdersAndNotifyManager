@@ -35,27 +35,11 @@ public class OrderController {
         SimpleOrder simpleOrder = new SimpleOrder(customer);
         customer.addSimpleOrder(simpleOrder);
         String result= orderService.placeOrder(simpleOrder, productNames);
-        // If the order is successfully placed, send a notification
-        if (result.equals("Order placed successfully")) {
-            String templateId = "order_placement_template"; // Template ID for order placement
-            List<String> productList = productNames; // Assuming productNames is a list of strings
-            Notification notification = createOrderNotification(customer.getEmail(), templateId, productList);
-            notificationService.sendNotification(notification);
-        }
+
         return result;
     }
 
-    // Helper method to create an order notification
-    private Notification createOrderNotification(String recipient, String templateId, List<String> productNames) {
-         templateId = "order_placement_template"; // Template ID for order placement
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("{x}", recipient); // Replace with recipient's name or email
-        placeholders.put("{y}", String.join(", ", productNames)); // Join the product names
-        return new Notification(recipient, templateId, placeholders);
-    }
-
-
-    // API endpoint to place a compound order
+// API endpoint to place a compound order
     @PostMapping("/compound")
     public List<String> placeCompoundOrder(
             @RequestParam String customerEmail,

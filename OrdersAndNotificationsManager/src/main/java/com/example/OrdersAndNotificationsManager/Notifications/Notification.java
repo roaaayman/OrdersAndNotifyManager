@@ -39,11 +39,5 @@ public class Notification {
         this.placeholders = placeholders;
     }
 
-    // Method to replace placeholders in the template
-    public String generateMessage(String template) {
-        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            template = template.replace(entry.getKey(), entry.getValue());
-        }
-        return template;
-    }
+
 }
