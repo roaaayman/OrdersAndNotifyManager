@@ -103,14 +103,24 @@ public class OrderController {
                 results.add("Friend " + friendEmail + ": " + friendResult);
             }
 
+
             SimpleOrder mainCustomerOrder = new SimpleOrder(mainCustomer);
             compoundOrder.addSimpleOrder(mainCustomerOrder);
             // Place the compound order for the main customer with the specified product names
             String mainCustomerResult = orderService.placeOrder(mainCustomerOrder, customerProductNames);
             results.add("Main Customer: " + mainCustomerResult);
 
+            List<String> finalProducts = new ArrayList<>();
+
+            for (int i = 0; i < friendEmails.size(); i++) {
+                List<String> friendProductList = friendProductNames.get(i);
+                finalProducts.addAll(friendProductList);
+            }
+
+            finalProducts.addAll(customerProductNames);
+
             // Place the compound order
-            String compoundOrderResult = orderService.placeOrder(compoundOrder, customerProductNames);
+            String compoundOrderResult = orderService.placeOrder(compoundOrder, finalProducts);
             results.add("Compound Order: " + compoundOrderResult);
         }
         return results;
