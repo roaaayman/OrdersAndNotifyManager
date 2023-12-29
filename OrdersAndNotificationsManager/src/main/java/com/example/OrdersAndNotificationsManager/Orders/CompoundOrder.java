@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompoundOrder implements Order {
-    private List<Order> orders = new ArrayList<>();
+    private List<SimpleOrder> orders = new ArrayList<>();
 
     private String location;
 
@@ -12,17 +12,20 @@ public class CompoundOrder implements Order {
         this.location = location;
     }
 
-    public void addOrder(Order order) {
+    public void addSimpleOrder(SimpleOrder order) {
         orders.add(order);
     }
 
     @Override
     public String placeorder(List<String> ProductName) {
-        System.out.println("Placing compound order to location:"+location);
-        for (Order order : orders) {
-            order.placeorder(ProductName);
+        for(SimpleOrder order:orders)
+        {
+            String result=order.placeorder(ProductName);
+            if(!result.equals("simple order placed"))
+            {
+                return result;
+            }
         }
-
-        return null;
+        return "compound order placed";
     }
 }

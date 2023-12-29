@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -32,7 +34,7 @@ public class OrderController {
 
         // Create a simple order
         SimpleOrder simpleOrder = new SimpleOrder(customer);
-       // simpleOrder.setShippingFee(shippingFee);
+        // simpleOrder.setShippingFee(shippingFee);
 
         // Place the order
 
@@ -41,15 +43,76 @@ public class OrderController {
 
 
     // API endpoint to place a compound order
-    /*@PostMapping("/compound")
-    public ResponseEntity<String> placeCompoundOrder(@RequestBody List<String> productNames) {
-        CompoundOrder compoundOrder = new CompoundOrder();
-        for (String productName : productNames) {
-            Order simpleOrder = new SimpleOrder(productName);
-            compoundOrder.addOrder(simpleOrder);
+    @PostMapping("/compound")
+    public List<String> placeCompoundOrder(
+            @RequestParam String customerEmail,
+            @RequestParam List<String> friendEmails,
+            @RequestParam List<String> customerProductNames,
+            @RequestParam List<List<String>> friendProductNames
+    ) {
+        List<String> results = new ArrayList<>();
+        // Check if the main customer exists
+        Customer mainCustomer = customerService.getCustomerByEmail(customerEmail);
+        if (mainCustomer == null) {
+            return Collections.singletonList("main customer not available");
         }
-        orderService.placeOrder(compoundOrder);
-        return ResponseEntity.ok("Compound order placed successfully.");
-    }*/
-}
 
+        // Create a compound order
+        CompoundOrder compoundOrder = new CompoundOrder();
+
+        // Add a simple order for the main customer with the specified product names
+
+
+        boolean allFriendsAvailable = true;
+        List<SimpleOrder> friendOrders = new ArrayList<>();
+
+        // Add simple orders for friends with their specified product names
+        for (int i = 0; i < friendEmails.size(); i++) {
+            String friendEmail = friendEmails.get(i);
+
+
+            // Check if the friend customer exists
+            Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
+            if (friendCustomer == null )
+            {
+                results.add("Friend email not available : " + friendEmail);
+                allFriendsAvailable=false;
+                break;
+            }
+
+            // Check if the friend's location matches the main customer's location
+             if (!friendCustomer.getLocation().equals(mainCustomer.getLocation())) {
+                results.add("Friend " + friendEmail + " has a different location than the customer");
+                allFriendsAvailable=false;
+                break;
+            }
+
+
+        }
+
+        if(allFriendsAvailable) {
+
+            for(int i=0;i<friendEmails.size();i++)
+            {
+                List<String> friendProductList = friendProductNames.get(i);
+                String friendEmail = friendEmails.get(i);
+                Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
+                SimpleOrder friendOrder=new SimpleOrder(friendCustomer);
+                compoundOrder.addSimpleOrder(friendOrder);
+                String friendResult = orderService.placeOrder(friendOrder, friendProductList);
+                results.add("Friend " + friendEmail + ": " + friendResult);
+            }
+
+            SimpleOrder mainCustomerOrder = new SimpleOrder(mainCustomer);
+            compoundOrder.addSimpleOrder(mainCustomerOrder);
+            // Place the compound order for the main customer with the specified product names
+            String mainCustomerResult = orderService.placeOrder(mainCustomerOrder, customerProductNames);
+            results.add("Main Customer: " + mainCustomerResult);
+
+            // Place the compound order
+            String compoundOrderResult = orderService.placeOrder(compoundOrder, customerProductNames);
+            results.add("Compound Order: " + compoundOrderResult);
+        }
+        return results;
+    }
+}

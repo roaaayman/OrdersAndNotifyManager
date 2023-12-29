@@ -17,40 +17,40 @@ public class SimpleOrder implements Order {
     public SimpleOrder(Customer customer) {
         this.customer = customer;
         this.products = new ArrayList<>();
-        this.shippingFee = 0.0;
+        this.shippingFee = 50.0;
     }
 
     @Override
     public String placeorder(List<String> ProductName) {
-        List<Products> productss= DummyProductList.getDummyProducts();
-        for (String productName: ProductName) {
-            boolean productFound=false;
-            for (Products p:productss) {
-                if(p.getName().equals(productName))
-                {products.add(p);
-                    productFound=true;
+        List<Products> productss = DummyProductList.getDummyProducts();
+        List<String> purchasedproducts = new ArrayList<>();
+        for (String productName : ProductName) {
+            boolean productFound = false;
+            for (Products p : productss) {
+                if (p.getName().equals(productName)) {
+                    products.add(p);
+                    purchasedproducts.add(productName);
+                    productFound = true;
                     break;
+
+
                 }
 
             }
-            if(!productFound)
-            {
-                return "Product not available:"+productName;
+            if (!productFound) {
+                return "Product not available:" + productName;
             }
 
         }
         double total = calculateTotal();
-        if(customer.getBalance()>=total)
-        {
-            customer.setBalance(customer.getBalance()-total);
-            return "simple order placed";
+        if (customer.getBalance() >= total) {
+            customer.setBalance(customer.getBalance() - total - shippingFee);
+            return "purchased products"
+        } else {
+            return "No enough balance";
         }
-        else
-        {
-            return "no enough balance";
-        }
-
     }
+
 
 
     public void setShippingFee(double shippingFee) {
