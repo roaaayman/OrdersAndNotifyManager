@@ -2,6 +2,7 @@ package com.example.OrdersAndNotificationsManager.Orders;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,4 +14,5 @@ public class OrderService {
         String result = order.placeorder(productNames);
         return result;
     }
+
 }

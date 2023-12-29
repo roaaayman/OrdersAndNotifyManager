@@ -46,7 +46,7 @@ public class SimpleOrder implements Order {
         if (customer.getBalance() >= total) {
             customer.setBalance(customer.getBalance() - total - shippingFee);
             return "Purchased products: "+String.join(",", addedproducts) +
-                    "\nTotal Deducted Amount: " + total + "  shipping fee " + shippingFee+"\n" ;
+                    "Total Deducted Amount: " + total + "  shipping fee " + shippingFee ;
         } else {
             return "No enough balance";
         }
@@ -54,16 +54,23 @@ public class SimpleOrder implements Order {
 
 
 
-    public void setShippingFee(double shippingFee) {
-        this.shippingFee = shippingFee;
-    }
-
     public double calculateTotal() {
         double total = 0.0;
         for (Products product : products) {
             total += product.getPrice();
         }
         return total;
+    }
+
+    public String getOrderDetails() {
+        String orderDetails = "Simple Order: " + customer.getEmail() + ", Products:";
+
+        for (int i = 0; i < products.size(); i++) {
+            orderDetails += " Product: " + products.get(i).getName() + ", Price: " + products.get(i).getPrice() + " & ";
+        }
+
+        String totalamount_shipping="Total amount: "+calculateTotal()+" ,Shipping fee: "+shippingFee;
+        return orderDetails+totalamount_shipping;
     }
 
 }
