@@ -13,6 +13,16 @@ public class Customer {
     private double balance;
     private String location;
     private String address;
+
+    public String getPhonenum() {
+        return phonenum;
+    }
+
+    public void setPhonenum(String phonenum) {
+        this.phonenum = phonenum;
+    }
+
+    private String phonenum;
     private List<SimpleOrder> simpleOrders = new ArrayList<>();
     private List<CompoundOrder> compoundOrders = new ArrayList<>();
 
@@ -33,11 +43,12 @@ public class Customer {
         this.location = location;
     }
 
-    public Customer(String email, String password,  String location,String address) {
+    public Customer(String email, String password,  String location,String address,String phonenum) {
         this.password=password;
         this.email=email;
         this.location=location;
         this.address=address;
+        this.phonenum=phonenum;
     }
 
     public String getEmail() {
