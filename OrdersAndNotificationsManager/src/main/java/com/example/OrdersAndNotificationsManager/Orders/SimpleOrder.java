@@ -1,6 +1,7 @@
 package com.example.OrdersAndNotificationsManager.Orders;
 
 import com.example.OrdersAndNotificationsManager.Customers.Customer;
+import com.example.OrdersAndNotificationsManager.Notifications.MessageTemplate;
 import com.example.OrdersAndNotificationsManager.Products.DummyProductList;
 import com.example.OrdersAndNotificationsManager.Products.Products;
 
@@ -45,6 +46,8 @@ public class SimpleOrder implements Order {
         double total = calculateTotal();
         if (customer.getBalance() >= total) {
             customer.setBalance(customer.getBalance() - total - shippingFee);
+            // Generate personalized message using the MessageTemplate class
+            String personalizedMessage = MessageTemplate.generateConfirmationMessage(customer.getEmail(), addedproducts);
             return "Purchased products: "+String.join(",", addedproducts) +
                     "Total Deducted Amount: " + total + "  shipping fee " + shippingFee ;
         } else {
@@ -72,5 +75,6 @@ public class SimpleOrder implements Order {
         String totalamount_shipping="Total amount: "+calculateTotal()+" ,Shipping fee: "+shippingFee;
         return orderDetails+totalamount_shipping;
     }
+
 
 }
