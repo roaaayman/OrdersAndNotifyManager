@@ -1,6 +1,5 @@
 package com.example.OrdersAndNotificationsManager.Notifications;
 
-import com.example.OrdersAndNotificationsManager.Notifications.NotificationObserver;
 import org.springframework.stereotype.Service;
 
 @Service

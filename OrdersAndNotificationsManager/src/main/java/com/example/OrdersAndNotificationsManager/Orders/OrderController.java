@@ -2,8 +2,7 @@ package com.example.OrdersAndNotificationsManager.Orders;
 
 import com.example.OrdersAndNotificationsManager.Customers.Customer;
 import com.example.OrdersAndNotificationsManager.Customers.CustomerService;
-import com.example.OrdersAndNotificationsManager.Notifications.Notification;
-import com.example.OrdersAndNotificationsManager.Notifications.NotificationService;
+import com.example.OrdersAndNotificationsManager.Notifications.NotificationObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +14,13 @@ public class OrderController {
 
     private final OrderService orderService;
     private final CustomerService customerService;
-    private final NotificationService notificationService;
+
 
     @Autowired
-    public OrderController(OrderService orderService, CustomerService customerService, NotificationService notificationService) {
+    public OrderController(OrderService orderService, CustomerService customerService) {
         this.orderService = orderService;
         this.customerService = customerService;
-        this.notificationService = notificationService;
+       // Register NotificationService as an observer
     }
 
     // API endpoint to place a simple order
