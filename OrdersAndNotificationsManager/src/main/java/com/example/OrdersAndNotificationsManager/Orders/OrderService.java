@@ -16,7 +16,7 @@ public class OrderService implements NotificationSubject {
         // Pass the list of product names to the order
         String result = order.placeorder(productNames);
         // Notify observers upon successful order placement
-        String Message="order placed ";
+        String Message="notification";
         notifyObservers(Message);
         return result;
 
