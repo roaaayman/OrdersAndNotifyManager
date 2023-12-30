@@ -1,4 +1,8 @@
 package com.example.OrdersAndNotificationsManager.Notifications;
+
+import org.springframework.stereotype.Service;
+
+@Service
 public class EmailNotificationObserver implements NotificationObserver {
     @Override
     public void update(String notification) {
