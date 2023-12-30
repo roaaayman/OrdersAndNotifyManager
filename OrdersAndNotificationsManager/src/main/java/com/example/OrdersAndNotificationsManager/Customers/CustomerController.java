@@ -31,6 +31,11 @@ public class CustomerController {
 
 
 
+    @GetMapping("/checkbyphone/{phonenum}")
+    public Customer checkUserbyphone(@PathVariable("phonenum") String phonenum) {
+        return customerService.getCustomerByPhone(phonenum);
+    }
+
     @GetMapping("/check/{email}")
     public Customer checkUser(@PathVariable("email") String email) {
        return customerService.getCustomerByEmail(email);
