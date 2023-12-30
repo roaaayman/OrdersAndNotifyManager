@@ -23,7 +23,6 @@ public class OrderController {
     public OrderController(OrderService orderService, CustomerService customerService, SMSNotificationObserver smsObserver, EmailLNotificationObserver emailObserver) {
         this.orderService = orderService;
         this.customerService = customerService;
-       // Register NotificationService as an observer
         this.smsObserver = smsObserver;
         this.emailObserver = emailObserver;
     }
@@ -41,6 +40,12 @@ public class OrderController {
         simpleOrder.attachObservers(smsObserver, emailObserver);
         customer.addSimpleOrder(simpleOrder);
         String result= orderService.placeOrder(simpleOrder, productNames);
+
+        // Check if the order was confirmed
+        if (result.contains("CONFIRMED")) {
+            // Update the customer with the order
+            customer.addSimpleOrder(simpleOrder);
+        }
 
         return result;
     }
@@ -69,7 +74,6 @@ public class OrderController {
         for (int i = 0; i < friendEmails.size(); i++) {
             String friendEmail = friendEmails.get(i);
 
-
             // Check if the friend customer exists
             Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
             if (friendCustomer == null )
@@ -85,8 +89,6 @@ public class OrderController {
                 allFriendsAvailable=false;
                 break;
             }
-
-
         }
 
         if(allFriendsAvailable) {
@@ -138,11 +140,15 @@ public class OrderController {
         List<String> orders = new ArrayList<>();
         List<SimpleOrder> simpleOrders = customer.getSimpleOrders();
         for (SimpleOrder simpleOrder : simpleOrders) {
-            orders.add( simpleOrder.getOrderDetails());
+            String orderDetails = simpleOrder.getOrderDetails() + ", Order Status: " + simpleOrder.getStatus();
+            orders.add(orderDetails);
         }
+
         List<CompoundOrder> compoundOrders = customer.getCompoundOrders();
         for (CompoundOrder compoundOrder : compoundOrders) {
-            orders.add("Compound Order: " + compoundOrder.getOrderDetails());
+            String orderDetails = "Compound Order: " + compoundOrder.getOrderDetails() +
+                    ", Order Status: " + compoundOrder.getStatus();
+            orders.add(orderDetails);
         }
 
         return orders;
