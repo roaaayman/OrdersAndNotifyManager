@@ -13,13 +13,31 @@ public class SimpleOrder implements Order, NotificationSubject {
     private List<Products> products;
     private double shippingFee;
     private List<NotificationObserver> observers;
+    private OrderStatus status;
+    public double getShippingFee() {
+        return shippingFee;
+    }
 
+    public void setShippingFee(double shippingFee) {
+        this.shippingFee = shippingFee;
+    }
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+
+    public enum OrderStatus {
+        PLACED,
+        CONFIRMED,
+        SHIPPED
+    }
 
     // Constructor
     public SimpleOrder(Customer customer) {
         this.customer = customer;
         this.products = new ArrayList<>();
         this.shippingFee = 50.0;
+        this.status = OrderStatus.PLACED;
         this.observers = new ArrayList<>();
            }
 
@@ -35,8 +53,6 @@ public class SimpleOrder implements Order, NotificationSubject {
                     addedproducts.add(productName);
                     productFound = true;
                     break;
-
-
                 }
 
             }
@@ -47,16 +63,40 @@ public class SimpleOrder implements Order, NotificationSubject {
         }
         double total = calculateTotal();
         if (customer.getBalance() >= total) {
-            customer.setBalance(customer.getBalance() - total - shippingFee);
-            generateConfirmationMessage();
-            return "Purchased products: "+String.join(",", addedproducts) +
-                    "Total Deducted Amount: " + total + "  shipping fee " + shippingFee ;
+            customer.setBalance(customer.getBalance() - total);
+            status = OrderStatus.CONFIRMED;
+            String confirmationStatus = "---CONFIRMED---";
+
+            if (status == OrderStatus.CONFIRMED) {
+                String shippingConfirmationResult = confirmShipping();
+                if (status == OrderStatus.SHIPPED) {
+                    confirmationStatus = "---SHIPPED---";
+                }
+                return "---Confirmed---" +" Purchased products: " + String.join(",", addedproducts) +  ".  Total Deducted Amount: " + total + " \n" +
+                        confirmationStatus + shippingConfirmationResult;
+            } else {
+                return "Order placed but confirmation failed";
+            }
         } else {
-            return "No enough balance";
+            return "Not enough balance";
         }
     }
 
-
+    // Method to confirm shipping
+    public String confirmShipping() {
+        if (status == OrderStatus.CONFIRMED) {
+            double totalWithShipping = calculateTotal() + shippingFee;
+            if (customer.getBalance() >= totalWithShipping) {
+                customer.setBalance(customer.getBalance() - shippingFee);
+                status = OrderStatus.SHIPPED;
+                return "Order has been shipped. Total Amount with Shipping: " + totalWithShipping;
+            } else {
+                return "Not enough balance to cover shipping fees";
+            }
+        } else {
+            return "Order has not been confirmed yet";
+        }
+    }
 
     public double calculateTotal() {
         double total = 0.0;
