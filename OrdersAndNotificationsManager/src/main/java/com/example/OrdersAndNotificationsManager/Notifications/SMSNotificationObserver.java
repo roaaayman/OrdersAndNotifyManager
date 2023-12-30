@@ -5,15 +5,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 public class SMSNotificationObserver implements NotificationObserver {
     private List<String> smsNotifications = new ArrayList<>();
 
     @Override
     public void update(String notification) {
-        sendSMS(notification); // Invoke sending SMS logic
-        addNotification("Sending SMS: " + notification); // Store the notification
+        sendSMS(notification);
+        addNotification("Sending SMS: " + notification); // Add the notification
     }
 
     private void sendSMS(String notification) {
@@ -25,7 +24,6 @@ public class SMSNotificationObserver implements NotificationObserver {
         smsNotifications.add(message);
     }
 
-    @Override
     public List<String> getNotifications() {
         return smsNotifications;
     }

@@ -2,7 +2,8 @@ package com.example.OrdersAndNotificationsManager.Orders;
 
 import com.example.OrdersAndNotificationsManager.Customers.Customer;
 import com.example.OrdersAndNotificationsManager.Customers.CustomerService;
-import com.example.OrdersAndNotificationsManager.Notifications.NotificationObserver;
+import com.example.OrdersAndNotificationsManager.Notifications.EmailLNotificationObserver;
+import com.example.OrdersAndNotificationsManager.Notifications.SMSNotificationObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +15,17 @@ public class OrderController {
 
     private final OrderService orderService;
     private final CustomerService customerService;
+    private final EmailLNotificationObserver emailObserver ;
+    private final SMSNotificationObserver smsObserver ;
 
 
     @Autowired
-    public OrderController(OrderService orderService, CustomerService customerService) {
+    public OrderController(OrderService orderService, CustomerService customerService, SMSNotificationObserver smsObserver, EmailLNotificationObserver emailObserver) {
         this.orderService = orderService;
         this.customerService = customerService;
        // Register NotificationService as an observer
+        this.smsObserver = smsObserver;
+        this.emailObserver = emailObserver;
     }
 
     // API endpoint to place a simple order
@@ -32,6 +37,8 @@ public class OrderController {
             return "email not available";
         }
         SimpleOrder simpleOrder = new SimpleOrder(customer);
+
+        simpleOrder.attachObservers(smsObserver, emailObserver);
         customer.addSimpleOrder(simpleOrder);
         String result= orderService.placeOrder(simpleOrder, productNames);
 

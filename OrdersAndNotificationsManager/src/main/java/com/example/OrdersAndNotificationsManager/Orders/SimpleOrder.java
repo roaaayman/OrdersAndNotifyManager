@@ -1,21 +1,18 @@
 package com.example.OrdersAndNotificationsManager.Orders;
 
 import com.example.OrdersAndNotificationsManager.Customers.Customer;
-import com.example.OrdersAndNotificationsManager.Notifications.EmailNotificationObserver;
-import com.example.OrdersAndNotificationsManager.Notifications.MessageTemplate;
-import com.example.OrdersAndNotificationsManager.Notifications.SMSNotificationObserver;
+import com.example.OrdersAndNotificationsManager.Notifications.*;
 import com.example.OrdersAndNotificationsManager.Products.DummyProductList;
 import com.example.OrdersAndNotificationsManager.Products.Products;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleOrder implements Order {
+public class SimpleOrder implements Order, NotificationSubject {
     private Customer customer;
     private List<Products> products;
     private double shippingFee;
-    SMSNotificationObserver smsNotificationObserver;
-    EmailNotificationObserver emailNotificationObserver;
+    private List<NotificationObserver> observers;
 
 
     // Constructor
@@ -23,7 +20,8 @@ public class SimpleOrder implements Order {
         this.customer = customer;
         this.products = new ArrayList<>();
         this.shippingFee = 50.0;
-    }
+        this.observers = new ArrayList<>();
+           }
 
     @Override
     public String placeorder(List<String> ProductName) {
@@ -50,7 +48,7 @@ public class SimpleOrder implements Order {
         double total = calculateTotal();
         if (customer.getBalance() >= total) {
             customer.setBalance(customer.getBalance() - total - shippingFee);
-
+            generateConfirmationMessage();
             return "Purchased products: "+String.join(",", addedproducts) +
                     "Total Deducted Amount: " + total + "  shipping fee " + shippingFee ;
         } else {
@@ -85,11 +83,30 @@ public class SimpleOrder implements Order {
         }
 
         String message= MessageTemplate.generateConfirmationMessage(customer.getEmail(), addedProducts);
-        // Notify both SMS and Email observers
-        smsNotificationObserver.update(message);
-        emailNotificationObserver.update(message);
+        notifyObservers(message);
 
         return message;
+    }
+
+
+    @Override
+    public void attach(NotificationObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(NotificationObserver observer) {
+        observers.remove(observer);
+    }
+    public void attachObservers( SMSNotificationObserver smsObserver, EmailLNotificationObserver emailObserver) {
+        this.attach(smsObserver); // Attach SMS observer
+        this.attach(emailObserver); // Attach Email observer
+    }
+    @Override
+    public void notifyObservers(String notification) {
+        for (NotificationObserver observer : observers) {
+            observer.update(notification);
+        }
     }
 
 
