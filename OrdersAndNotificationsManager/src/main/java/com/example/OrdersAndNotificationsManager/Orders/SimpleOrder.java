@@ -1,7 +1,9 @@
 package com.example.OrdersAndNotificationsManager.Orders;
 
 import com.example.OrdersAndNotificationsManager.Customers.Customer;
+import com.example.OrdersAndNotificationsManager.Notifications.EmailNotificationObserver;
 import com.example.OrdersAndNotificationsManager.Notifications.MessageTemplate;
+import com.example.OrdersAndNotificationsManager.Notifications.SMSNotificationObserver;
 import com.example.OrdersAndNotificationsManager.Products.DummyProductList;
 import com.example.OrdersAndNotificationsManager.Products.Products;
 
@@ -12,6 +14,8 @@ public class SimpleOrder implements Order {
     private Customer customer;
     private List<Products> products;
     private double shippingFee;
+    SMSNotificationObserver smsNotificationObserver;
+    EmailNotificationObserver emailNotificationObserver;
 
 
     // Constructor
@@ -80,7 +84,12 @@ public class SimpleOrder implements Order {
             addedProducts.add(product.getName());
         }
 
-        return MessageTemplate.generateConfirmationMessage(customer.getEmail(), addedProducts);
+        String message= MessageTemplate.generateConfirmationMessage(customer.getEmail(), addedProducts);
+        // Notify both SMS and Email observers
+        smsNotificationObserver.update(message);
+        emailNotificationObserver.update(message);
+
+        return message;
     }
 
 
