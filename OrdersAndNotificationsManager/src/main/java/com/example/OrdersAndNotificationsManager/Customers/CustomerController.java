@@ -43,6 +43,12 @@ public class CustomerController {
 
     @PutMapping("/{email}/balance")
     public String updateBalance(@PathVariable String email, @RequestBody double balance) {
+        Customer customer=customerService.getCustomerByEmail(email);
+        if(customer==null)
+        {
+            return"user not avaialable";
+        }
+
         // Logic to update the balance of a customer
          customerService.updateBalance(email, balance);
          return "Balance updated to "+balance;
