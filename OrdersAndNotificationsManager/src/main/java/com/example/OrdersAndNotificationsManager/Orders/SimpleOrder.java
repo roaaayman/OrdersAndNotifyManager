@@ -90,7 +90,7 @@ public class SimpleOrder implements Order, NotificationSubject {
     public String confirmShipping() {
         if (status == OrderStatus.CONFIRMED) {
             double totalWithShipping = calculateTotal() + shippingFee;
-            if (customer.getBalance() >= totalWithShipping) {
+            if (customer.getBalance() >= shippingFee) {
                 customer.setBalance(customer.getBalance() - shippingFee);
                 status = OrderStatus.SHIPPED;
                 return "Order has been shipped. Total Amount with Shipping: " + totalWithShipping;

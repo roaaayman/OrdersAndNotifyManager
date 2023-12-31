@@ -47,6 +47,7 @@ public class CompoundOrder implements Order {
             calculateShippingFee(); // Calculate shipping fee after all orders are confirmed
             status = OrderStatus.CONFIRMED;
             return "compound order placed";
+
         } else {
             status = OrderStatus.PLACED;
             return "some orders could not be placed";
