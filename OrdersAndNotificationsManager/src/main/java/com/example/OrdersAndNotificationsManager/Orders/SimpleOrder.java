@@ -127,7 +127,7 @@ public class SimpleOrder implements Order, NotificationSubject {
         Duration timeSinceOrderPlacement = Duration.between(Time_of_placement, currentTime);
         if(timeSinceOrderPlacement.compareTo(automatedDuration)<=0) {
             iscancelled = true;
-            customer.setBalance(customer.getBalance() + calculateTotal());
+            customer.setBalance(customer.getBalance() + calculateTotal()+shippingFee);
             customer.removeSimpleOrder(this);
             status = OrderStatus.CANCELLED;
             generateCancellationMessage();

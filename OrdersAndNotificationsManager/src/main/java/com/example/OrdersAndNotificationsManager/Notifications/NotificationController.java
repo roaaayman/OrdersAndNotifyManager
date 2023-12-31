@@ -3,6 +3,7 @@ package com.example.OrdersAndNotificationsManager.Notifications;
 import com.example.OrdersAndNotificationsManager.Customers.Customer;
 import com.example.OrdersAndNotificationsManager.Customers.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +18,9 @@ import java.util.Queue;
 @RequestMapping("/api/notification")
 public class NotificationController {
 
-    private final SMSNotificationObserver smsNotificationObserver;
-    private final EmailLNotificationObserver emailNotificationObserver;
-    private final Queue<String> notificationsQueue = new LinkedList<>();
+    private  SMSNotificationObserver smsNotificationObserver;
+    private  EmailLNotificationObserver emailNotificationObserver;
+    private  Queue<String> notificationsQueue = new LinkedList<>();
 
 
     @Autowired
@@ -27,6 +28,7 @@ public class NotificationController {
     public NotificationController(SMSNotificationObserver smsNotificationObserver, EmailLNotificationObserver emailNotificationObserver) {
         this.smsNotificationObserver = smsNotificationObserver;
         this.emailNotificationObserver = emailNotificationObserver;
+
     }
 
     @GetMapping("/smsNotify/{phonenum}")
@@ -78,5 +80,7 @@ public class NotificationController {
 
         return customerEmailNotifications;
     }
+
+
 
 }
