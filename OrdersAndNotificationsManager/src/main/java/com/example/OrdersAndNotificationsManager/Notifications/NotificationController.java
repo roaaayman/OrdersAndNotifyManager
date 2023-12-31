@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/notification")
@@ -79,6 +76,17 @@ public class NotificationController {
         }
 
         return customerEmailNotifications;
+    }
+    @GetMapping("/mostUsedTemplate")
+    public Map.Entry<String, Integer> getMostUsedTemplate() {
+        NotificationStatistics statistics = new NotificationStatistics();
+        return statistics.getMostSentTemplate();
+    }
+
+    @GetMapping("/mostNotifiedContact")
+    public Map.Entry<String, Integer> getMostNotifiedContact() {
+        NotificationStatistics statistics = new NotificationStatistics();
+        return statistics.getMostNotifiedContact();
     }
 
 
