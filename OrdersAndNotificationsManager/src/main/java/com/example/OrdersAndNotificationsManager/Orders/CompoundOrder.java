@@ -9,16 +9,15 @@ import java.util.List;
 public class CompoundOrder implements Order {
     private List<SimpleOrder> orders = new ArrayList<>();
     private OrderStatus status;
-
+    private double totalShippingFee;
+    private CompoundOrder compoundOrder;
     private boolean iscancelled;
 
-    private double shippingFee;
 
 
-    public void setShippingFee(double fee) {
-        this.shippingFee = fee;
+    public void setTotalShippingFee(double totalShippingFee) {
+        this.totalShippingFee = totalShippingFee;
     }
-
     public enum OrderStatus {
         PLACED,
         CONFIRMED,
@@ -42,14 +41,23 @@ public class CompoundOrder implements Order {
             String result = order.placeorder(ProductName);
             if (!result.equals("simple order placed")) {
                 allConfirmed = true;
-                break; // Exit loop if any order is not confirmed
+
+                break;
             }
         }
 
         if (allConfirmed) {
-            calculateShippingFee(); // Calculate shipping fee after all orders are confirmed
+            int totalOrders = orders.size();
+            if (totalOrders > 0) {
+                double individualShippingFee = totalShippingFee / totalOrders;
+                for (SimpleOrder order : orders) {
+                    order.setShippingFee(individualShippingFee);
+                }
+            }
+          // Calculate shipping fee after all orders are confirmed
             status = OrderStatus.CONFIRMED;
-            return "compound order placed";
+            return "compound order confirmed";
+
 
         } else {
 
@@ -67,16 +75,7 @@ public class CompoundOrder implements Order {
         return null;
     }
 
-    private void calculateShippingFee() {
-        int numberOfCustomers = orders.size();
-        if (numberOfCustomers > 0) {
-            double feePerCustomer = shippingFee / numberOfCustomers;
 
-            for (SimpleOrder order : orders) {
-                order.setShippingFee(feePerCustomer);
-            }
-        }
-    }
 
     public String getOrderDetails()
     {

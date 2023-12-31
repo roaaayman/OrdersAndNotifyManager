@@ -15,22 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleOrder implements Order, NotificationSubject {
-    private Customer customer;
-    private List<Products> products;
-    private double shippingFee;
-    private List<NotificationObserver> observers;
+    private final Customer customer;
+    private final List<Products> products;
+    public double shippingFee=50;
+    private final List<NotificationObserver> observers;
     private OrderStatus status;
     private boolean iscancelled;
     private boolean isshippingcancelled;
     private static int increment=1;
-    private  int orderID;
+    private final int orderID;
+
 
     private static Duration automatedDuration=Duration.ofSeconds(30);
     private LocalDateTime Time_of_placement;
 
-    public double getShippingFee() {
-        return shippingFee;
-    }
+
 
     public void setShippingFee(double shippingFee) {
         this.shippingFee = shippingFee;
@@ -38,6 +37,8 @@ public class SimpleOrder implements Order, NotificationSubject {
     public OrderStatus getStatus() {
         return status;
     }
+
+
 
 
     public enum OrderStatus {
@@ -52,7 +53,6 @@ public class SimpleOrder implements Order, NotificationSubject {
     public SimpleOrder(Customer customer) {
         this.customer = customer;
         this.products = new ArrayList<>();
-        this.shippingFee = 50.0;
         this.status = OrderStatus.PLACED;
         this.observers = new ArrayList<>();
         this.orderID=increment++;
@@ -74,6 +74,8 @@ public class SimpleOrder implements Order, NotificationSubject {
                     products.add(p);
                     addedproducts.add(productName);
                     productFound = true;
+                    setShippingFee(shippingFee);
+
                     break;
 
 
