@@ -33,12 +33,12 @@ public class CompoundOrder implements Order {
 
     @Override
     public String placeorder(List<String> ProductName) {
-        boolean allConfirmed = true;
+        boolean allConfirmed = false;
 
         for (SimpleOrder order : orders) {
             String result = order.placeorder(ProductName);
             if (!result.equals("simple order placed")) {
-                allConfirmed = false;
+                allConfirmed = true;
                 break; // Exit loop if any order is not confirmed
             }
         }
@@ -49,7 +49,7 @@ public class CompoundOrder implements Order {
             return "compound order placed";
 
         } else {
-            status = OrderStatus.PLACED;
+
             return "some orders could not be placed";
         }
     }
