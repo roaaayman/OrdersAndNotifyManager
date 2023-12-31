@@ -39,7 +39,8 @@ public class CompoundOrder implements Order {
             String result = order.placeorder(ProductName);
             if (!result.equals("simple order placed")) {
                 allConfirmed = true;
-                break; // Exit loop if any order is not confirmed
+
+                break;
             }
         }
 
