@@ -49,8 +49,41 @@ public class OrderController {
 
         return result;
     }
+    @PostMapping("/cancel")
+    public String cancelOrder(@RequestParam String email, @RequestParam int OrderID) {
+        // Check if the customer exists
+        Customer customer = customerService.getCustomerByEmail(email);
+        if (customer == null) {
+            return "email not available";
+        }
+        SimpleOrder simpleOrder = customer.getSimpleOrderById(OrderID);
+        simpleOrder.attachObservers(smsObserver, emailObserver);
 
-// API endpoint to place a compound order
+        if(simpleOrder!=null)
+        {
+            return simpleOrder.cancelorder();
+        }
+        return "order is not available";
+    }
+
+    @PostMapping("/cancelShip")
+    public String cancelShip(@RequestParam String email, @RequestParam int OrderID) {
+        // Check if the customer exists
+        Customer customer = customerService.getCustomerByEmail(email);
+        if (customer == null) {
+            return "email not available";
+        }
+        SimpleOrder simpleOrder = customer.getSimpleOrderById(OrderID);
+        simpleOrder.attachObservers(smsObserver, emailObserver);
+
+        if(simpleOrder!=null)
+        {
+            return simpleOrder.cancelShipping();
+        }
+        return "order is not available";
+    }
+
+    // API endpoint to place a compound order
     @PostMapping("/compound")
     public List<String> placeCompoundOrder(
             @RequestParam String customerEmail,
@@ -65,7 +98,7 @@ public class OrderController {
             return Collections.singletonList("main customer not available");
         }
 
-        int numberOfCustomers= friendEmails.size()+1;
+
         // Create a compound order
         CompoundOrder compoundOrder = new CompoundOrder();
         boolean allFriendsAvailable = true;
@@ -99,6 +132,7 @@ public class OrderController {
                 String friendEmail = friendEmails.get(i);
                 Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
                 SimpleOrder friendOrder=new SimpleOrder(friendCustomer);
+                friendOrder.attachObservers(smsObserver, emailObserver);
                 String friendResult = orderService.placeOrder(friendOrder, friendProductList);
                 friendCustomer.addSimpleOrder(friendOrder);
                 compoundOrder.addSimpleOrder(friendOrder);
@@ -107,6 +141,7 @@ public class OrderController {
 
 
             SimpleOrder mainCustomerOrder = new SimpleOrder(mainCustomer);
+            mainCustomerOrder.attachObservers(smsObserver,emailObserver);
             String mainCustomerResult = orderService.placeOrder(mainCustomerOrder, customerProductNames);
             compoundOrder.addSimpleOrder(mainCustomerOrder);
             results.add("Main Customer: " + mainCustomerResult);

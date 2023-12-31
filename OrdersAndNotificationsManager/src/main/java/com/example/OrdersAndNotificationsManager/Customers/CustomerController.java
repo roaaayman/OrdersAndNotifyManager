@@ -31,6 +31,11 @@ public class CustomerController {
 
 
 
+    @GetMapping("/checkbyphone/{phonenum}")
+    public Customer checkUserbyphone(@PathVariable("phonenum") String phonenum) {
+        return customerService.getCustomerByPhone(phonenum);
+    }
+
     @GetMapping("/check/{email}")
     public Customer checkUser(@PathVariable("email") String email) {
        return customerService.getCustomerByEmail(email);
@@ -38,6 +43,12 @@ public class CustomerController {
 
     @PutMapping("/{email}/balance")
     public String updateBalance(@PathVariable String email, @RequestBody double balance) {
+        Customer customer=customerService.getCustomerByEmail(email);
+        if(customer==null)
+        {
+            return"user not avaialable";
+        }
+
         // Logic to update the balance of a customer
          customerService.updateBalance(email, balance);
          return "Balance updated to "+balance;

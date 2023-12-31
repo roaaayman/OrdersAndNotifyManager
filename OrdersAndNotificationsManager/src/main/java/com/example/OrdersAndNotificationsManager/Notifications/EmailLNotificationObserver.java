@@ -11,14 +11,11 @@ public class EmailLNotificationObserver implements NotificationObserver {
 
     @Override
     public void update(String notification) {
-        sendEmail(notification);
+
         addNotification("Sending email: " + notification); // Add the notification
     }
 
-    private void sendEmail(String notification) {
-        // Simulating sending an email - Replace with actual email logic
-        System.out.println("Sending email: " + notification);
-    }
+
 
     private void addNotification(String message) {
         EmailNotification.add(message);

@@ -10,6 +10,8 @@ public class CompoundOrder implements Order {
     private List<SimpleOrder> orders = new ArrayList<>();
     private OrderStatus status;
 
+    private boolean iscancelled;
+
     private double shippingFee;
 
 
@@ -20,7 +22,8 @@ public class CompoundOrder implements Order {
     public enum OrderStatus {
         PLACED,
         CONFIRMED,
-        SHIPPED
+        SHIPPED,
+        CANCELLED
     }
 
     public void addSimpleOrder(SimpleOrder order) {
@@ -33,12 +36,12 @@ public class CompoundOrder implements Order {
 
     @Override
     public String placeorder(List<String> ProductName) {
-        boolean allConfirmed = true;
+        boolean allConfirmed = false;
 
         for (SimpleOrder order : orders) {
             String result = order.placeorder(ProductName);
             if (!result.equals("simple order placed")) {
-                allConfirmed = false;
+                allConfirmed = true;
                 break; // Exit loop if any order is not confirmed
             }
         }
@@ -47,10 +50,21 @@ public class CompoundOrder implements Order {
             calculateShippingFee(); // Calculate shipping fee after all orders are confirmed
             status = OrderStatus.CONFIRMED;
             return "compound order placed";
+
         } else {
-            status = OrderStatus.PLACED;
+
             return "some orders could not be placed";
         }
+    }
+
+    @Override
+    public String cancelorder() {
+        return null;
+    }
+
+    @Override
+    public String cancelShipping() {
+        return null;
     }
 
     private void calculateShippingFee() {
