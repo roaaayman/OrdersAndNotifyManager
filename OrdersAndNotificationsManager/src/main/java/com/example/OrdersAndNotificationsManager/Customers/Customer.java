@@ -92,4 +92,21 @@ public class Customer {
         compoundOrders.add(order);
     }
 
+    public void removeSimpleOrder(SimpleOrder order) {
+        simpleOrders.remove(order);
+    }
+
+    public void removeCompoundOrder(CompoundOrder order) {
+        compoundOrders.remove(order);
+    }
+
+    public SimpleOrder getSimpleOrderById(int orderId) {
+        for (SimpleOrder order : simpleOrders) {
+            if (order.getOrderID()==orderId) {
+                return order;
+            }
+        }
+        return null;
+    }
+
 }

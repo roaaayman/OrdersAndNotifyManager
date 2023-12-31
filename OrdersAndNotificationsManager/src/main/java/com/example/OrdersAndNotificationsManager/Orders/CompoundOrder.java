@@ -10,6 +10,8 @@ public class CompoundOrder implements Order {
     private List<SimpleOrder> orders = new ArrayList<>();
     private OrderStatus status;
 
+    private boolean iscancelled;
+
     private double shippingFee;
 
 
@@ -20,7 +22,8 @@ public class CompoundOrder implements Order {
     public enum OrderStatus {
         PLACED,
         CONFIRMED,
-        SHIPPED
+        SHIPPED,
+        CANCELLED
     }
 
     public void addSimpleOrder(SimpleOrder order) {
@@ -53,6 +56,16 @@ public class CompoundOrder implements Order {
 
             return "some orders could not be placed";
         }
+    }
+
+    @Override
+    public String cancelorder() {
+        return null;
+    }
+
+    @Override
+    public String cancelShipping() {
+        return null;
     }
 
     private void calculateShippingFee() {
