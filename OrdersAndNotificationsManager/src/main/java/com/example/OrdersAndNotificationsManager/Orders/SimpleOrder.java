@@ -25,7 +25,6 @@ public class SimpleOrder implements Order, NotificationSubject {
         return status;
     }
 
-
     public enum OrderStatus {
         PLACED,
         CONFIRMED,
@@ -39,7 +38,7 @@ public class SimpleOrder implements Order, NotificationSubject {
         this.shippingFee = 50.0;
         this.status = OrderStatus.PLACED;
         this.observers = new ArrayList<>();
-           }
+    }
 
     @Override
     public String placeorder(List<String> ProductName) {
