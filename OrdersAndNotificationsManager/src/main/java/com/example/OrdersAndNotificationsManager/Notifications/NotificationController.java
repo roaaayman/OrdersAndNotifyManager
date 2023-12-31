@@ -55,7 +55,7 @@ public class NotificationController {
     }
 
     @GetMapping("/emailNotify/{email}")
-    public List<String> getEmailNotificationsForCustomer(@PathVariable String email) {
+    public List<String> getEmailNotifications(@PathVariable String email) {
 
         List<String> allEmailNotifications = emailNotificationObserver.getNotifications();
         List<String> customerEmailNotifications = new ArrayList<>();
