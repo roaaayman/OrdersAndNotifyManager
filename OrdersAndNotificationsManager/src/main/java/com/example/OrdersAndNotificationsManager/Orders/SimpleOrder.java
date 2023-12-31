@@ -201,7 +201,7 @@ public class SimpleOrder implements Order, NotificationSubject {
 
         // Use the instance method to create the message
         String message = template.createMessage(customer.getEmail(), this);
-        trackNotificationForStatistics(customer.getEmail(), message);
+
         // Now you can use the message wherever needed
         notifyObservers(message);
 
@@ -214,7 +214,7 @@ public class SimpleOrder implements Order, NotificationSubject {
 
         // Use the instance method to create the message
         String message = template.createMessage(customer.getEmail(), this);
-        trackNotificationForStatistics(customer.getEmail(), message);
+
         // Now you can use the message wherever needed
         notifyObservers(message);
 
@@ -227,7 +227,7 @@ public class SimpleOrder implements Order, NotificationSubject {
 
         // Use the instance method to create the message
         String message = template.createMessage(customer.getEmail(), this);
-        trackNotificationForStatistics(customer.getEmail(), message);
+
         // Now you can use the message wherever needed
         notifyObservers(message);
 
@@ -240,7 +240,7 @@ public class SimpleOrder implements Order, NotificationSubject {
 
         // Use the instance method to create the message
         String message = template.createMessage(customer.getEmail(), this);
-        trackNotificationForStatistics(customer.getEmail(), message);
+
         // Now you can use the message wherever needed
         notifyObservers(message);
 
@@ -266,10 +266,6 @@ public class SimpleOrder implements Order, NotificationSubject {
         for (NotificationObserver observer : observers) {
             observer.update(notification);
         }
-    }
-
-    private void trackNotificationForStatistics(String contact, String message) {
-        NotificationStatistics.trackSuccessfulNotification(contact, message);
     }
 
 
