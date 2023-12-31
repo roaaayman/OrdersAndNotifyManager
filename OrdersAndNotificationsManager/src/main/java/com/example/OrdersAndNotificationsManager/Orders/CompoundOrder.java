@@ -51,7 +51,7 @@ public class CompoundOrder implements Order {
             if (totalOrders > 0) {
                 double individualShippingFee = totalShippingFee / totalOrders;
                 for (SimpleOrder order : orders) {
-                    order.setShippingFee(individualShippingFee);
+                    order.setShippingFee(50/orders.size());
                 }
             }
           // Calculate shipping fee after all orders are confirmed
