@@ -34,14 +34,12 @@ public class NotificationController {
 
         List<String> SMSNotifications = smsNotificationObserver.getNotifications();
         List<String> cutomerSMSnotifications = new ArrayList<>();
-        Customer customer=customerService.getCustomerByPhone(phonenum);
+        Customer customer = customerService.getCustomerByPhone(phonenum);
 
-        if(customer!=null) {
-            while(!notificationsQueue.isEmpty())
-            {
-                String notification=notificationsQueue.poll();
-                if(notification.contains(customer.getEmail()))
-                {
+        if (customer != null) {
+            for (int i = 0; i < notificationsQueue.size(); i++) {
+                String notification = notificationsQueue.poll();
+                if (notification.contains(customer.getEmail())) {
                     cutomerSMSnotifications.add(notification);
                 }
             }
@@ -49,7 +47,6 @@ public class NotificationController {
         }
 
         return cutomerSMSnotifications;
-
     }
 
     @GetMapping("/emailNotify/{email}")
@@ -58,21 +55,18 @@ public class NotificationController {
         List<String> EmailNotifications = emailNotificationObserver.getNotifications();
         List<String> customerEmailNotifications = new ArrayList<>();
 
-        Customer customer=customerService.getCustomerByEmail(email);
-            if(customer!=null) {
-                while(!notificationsQueue.isEmpty())
-                {
-                    String notification=notificationsQueue.poll();
-                    if(notification.contains(customer.getEmail()))
-                    {
-                        customerEmailNotifications.add(notification);
-                    }
+        Customer customer = customerService.getCustomerByEmail(email);
+        if (customer != null) {
+            for (int i = 0; i < notificationsQueue.size(); i++) {
+                String notification = notificationsQueue.poll();
+                if (notification.contains(customer.getEmail())) {
+                    customerEmailNotifications.add(notification);
                 }
-                notificationsQueue.addAll(EmailNotifications);
             }
+            notificationsQueue.addAll(EmailNotifications);
+        }
 
-            return customerEmailNotifications;
-
+        return customerEmailNotifications;
     }
 
 }
