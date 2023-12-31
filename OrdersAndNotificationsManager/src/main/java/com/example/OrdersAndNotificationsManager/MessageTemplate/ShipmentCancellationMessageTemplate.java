@@ -1,8 +1,9 @@
-package com.example.OrdersAndNotificationsManager.Notifications;
+package com.example.OrdersAndNotificationsManager.MessageTemplate;
 
+import com.example.OrdersAndNotificationsManager.MessageTemplate.MessageTemplateStrategy;
 import com.example.OrdersAndNotificationsManager.Orders.SimpleOrder;
 
-public class ShipmentCancellationMessageTemplate implements MessageTemplateStrategy{
+public class ShipmentCancellationMessageTemplate implements MessageTemplateStrategy {
 
     @Override
     public String createMessage(String customerName, SimpleOrder order) {

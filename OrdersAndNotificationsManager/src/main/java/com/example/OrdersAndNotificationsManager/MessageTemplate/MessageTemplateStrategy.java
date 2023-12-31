@@ -1,5 +1,5 @@
 // MessageTemplateStrategy.java
-package com.example.OrdersAndNotificationsManager.Notifications;
+package com.example.OrdersAndNotificationsManager.MessageTemplate;
 
 import com.example.OrdersAndNotificationsManager.Orders.SimpleOrder;
 

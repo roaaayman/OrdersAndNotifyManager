@@ -98,7 +98,7 @@ public class OrderController {
             return Collections.singletonList("main customer not available");
         }
 
-        int numberOfCustomers= friendEmails.size()+1;
+
         // Create a compound order
         CompoundOrder compoundOrder = new CompoundOrder();
         boolean allFriendsAvailable = true;
@@ -132,6 +132,7 @@ public class OrderController {
                 String friendEmail = friendEmails.get(i);
                 Customer friendCustomer = customerService.getCustomerByEmail(friendEmail);
                 SimpleOrder friendOrder=new SimpleOrder(friendCustomer);
+                friendOrder.attachObservers(smsObserver, emailObserver);
                 String friendResult = orderService.placeOrder(friendOrder, friendProductList);
                 friendCustomer.addSimpleOrder(friendOrder);
                 compoundOrder.addSimpleOrder(friendOrder);
@@ -140,6 +141,7 @@ public class OrderController {
 
 
             SimpleOrder mainCustomerOrder = new SimpleOrder(mainCustomer);
+            mainCustomerOrder.attachObservers(smsObserver,emailObserver);
             String mainCustomerResult = orderService.placeOrder(mainCustomerOrder, customerProductNames);
             compoundOrder.addSimpleOrder(mainCustomerOrder);
             results.add("Main Customer: " + mainCustomerResult);

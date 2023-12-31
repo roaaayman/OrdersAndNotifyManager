@@ -1,8 +1,6 @@
-package com.example.OrdersAndNotificationsManager.Notifications;
+package com.example.OrdersAndNotificationsManager.MessageTemplate;
 
 import com.example.OrdersAndNotificationsManager.Orders.SimpleOrder;
-
-import java.util.List;
 
 public class CancellationMessageTemplate implements MessageTemplateStrategy {
     @Override

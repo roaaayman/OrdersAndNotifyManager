@@ -1,6 +1,10 @@
 package com.example.OrdersAndNotificationsManager.Orders;
 
 import com.example.OrdersAndNotificationsManager.Customers.Customer;
+import com.example.OrdersAndNotificationsManager.MessageTemplate.CancellationMessageTemplate;
+import com.example.OrdersAndNotificationsManager.MessageTemplate.ConfirmationMessageTemplate;
+import com.example.OrdersAndNotificationsManager.MessageTemplate.ShipmentCancellationMessageTemplate;
+import com.example.OrdersAndNotificationsManager.MessageTemplate.ShipmentMessageTemplate;
 import com.example.OrdersAndNotificationsManager.Notifications.*;
 import com.example.OrdersAndNotificationsManager.Products.DummyProductList;
 import com.example.OrdersAndNotificationsManager.Products.Products;
@@ -146,7 +150,7 @@ public class SimpleOrder implements Order, NotificationSubject {
             isshippingcancelled = true;
             customer.setBalance(customer.getBalance() + shippingFee);
             status = OrderStatus.CANCELLEDSHIPPING;
-            generateShippingCancellationMessage();
+            generateShippmmentCancellationMessage();
             return "shipping is cancelled check your refund";
         }
         else {
@@ -227,7 +231,7 @@ public class SimpleOrder implements Order, NotificationSubject {
 
         return message;
     }
-    public String generateShippingCancellationMessage() {
+    public String generateShippmmentCancellationMessage() {
 
         // Create an instance of ConfirmationMessageTemplate
         ShipmentCancellationMessageTemplate template = new ShipmentCancellationMessageTemplate();
@@ -240,7 +244,6 @@ public class SimpleOrder implements Order, NotificationSubject {
 
         return message;
     }
-
 
 
     @Override
