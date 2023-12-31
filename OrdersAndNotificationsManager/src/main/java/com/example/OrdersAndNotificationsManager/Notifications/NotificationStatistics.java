@@ -1,24 +1,53 @@
 package com.example.OrdersAndNotificationsManager.Notifications;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 public class NotificationStatistics {
-    private static Map<String, Integer> notifiedContacts = new HashMap<>();
-    private static Map<String, Integer> sentTemplates = new HashMap<>();
+    private static int totalNotifications = 0;
+    private static int totalTemplatesSent = 0;
+
+    private static String mostNotifiedCustomer = null;
+    private static int countOfCustomerNotifications = 0;
+
+    private static String mostSentTemplate = null;
+    private static int mostSentTemplateCount = 0;
 
     public static void trackSuccessfulNotification(String contact, String template) {
-        notifiedContacts.put(contact, notifiedContacts.getOrDefault(contact, 0) + 1);
-        sentTemplates.put(template, sentTemplates.getOrDefault(template, 0) + 1);
+        totalNotifications++;
+        totalTemplatesSent++;
+
+        int contactCount = 1;
+        if (mostNotifiedCustomer != null && mostNotifiedCustomer.equals(contact)) {
+            contactCount = countOfCustomerNotifications + 1;
+        }
+
+        int templateCount = 1;
+        if (mostSentTemplate != null && mostSentTemplate.equals(template)) {
+            templateCount = mostSentTemplateCount + 1;
+        }
+
+        if (contactCount > countOfCustomerNotifications) {
+            mostNotifiedCustomer = contact;
+            countOfCustomerNotifications = contactCount;
+        }
+
+        if (templateCount > mostSentTemplateCount) {
+            mostSentTemplate = template;
+            mostSentTemplateCount = templateCount;
+        }
     }
 
-    public Map.Entry<String, Integer> getMostNotifiedContact() {
-        return Collections.max(notifiedContacts.entrySet(), Map.Entry.comparingByValue());
+    public String getMostNotifiedCustomer() {
+        return mostNotifiedCustomer;
     }
 
-    public Map.Entry<String, Integer> getMostSentTemplate() {
-        return Collections.max(sentTemplates.entrySet(), Map.Entry.comparingByValue());
+    public int getMostNotifiedCustomerCount() {
+        return countOfCustomerNotifications;
+    }
+
+    public String getMostSentTemplate() {
+        return mostSentTemplate;
+    }
+
+    public int getMostSentTemplateCount() {
+        return mostSentTemplateCount;
     }
 }
-

@@ -78,15 +78,15 @@ public class NotificationController {
         return customerEmailNotifications;
     }
     @GetMapping("/mostUsedTemplate")
-    public Map.Entry<String, Integer> getMostUsedTemplate() {
+    public String getMostUsedTemplate() {
         NotificationStatistics statistics = new NotificationStatistics();
-        return statistics.getMostSentTemplate();
+        return statistics.getMostSentTemplate()+" "+statistics.getMostSentTemplateCount();
     }
 
     @GetMapping("/mostNotifiedContact")
-    public Map.Entry<String, Integer> getMostNotifiedContact() {
+    public String getMostNotifiedContact() {
         NotificationStatistics statistics = new NotificationStatistics();
-        return statistics.getMostNotifiedContact();
+        return statistics.getMostNotifiedCustomer()+" "+statistics.getMostNotifiedCustomerCount();
     }
 
 
