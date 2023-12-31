@@ -11,14 +11,10 @@ public class SMSNotificationObserver implements NotificationObserver {
 
     @Override
     public void update(String notification) {
-        sendSMS(notification);
         addNotification("Sending SMS: " + notification); // Add the notification
     }
 
-    private void sendSMS(String notification) {
-        // Simulating sending an SMS - Replace with actual SMS logic
-        System.out.println("Sending SMS: " + notification);
-    }
+
 
     private void addNotification(String message) {
         smsNotifications.add(message);
