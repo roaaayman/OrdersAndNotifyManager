@@ -17,9 +17,9 @@ import java.util.Queue;
 @RequestMapping("/api/notification")
 public class NotificationController {
 
-    private  SMSNotificationObserver smsNotificationObserver;
-    private  EmailLNotificationObserver emailNotificationObserver;
-    private  Queue<String> notificationsQueue = new LinkedList<>();
+    private final SMSNotificationObserver smsNotificationObserver;
+    private final EmailLNotificationObserver emailNotificationObserver;
+    private final Queue<String> notificationsQueue = new LinkedList<>();
 
 
     @Autowired
@@ -30,40 +30,50 @@ public class NotificationController {
     }
 
     @GetMapping("/smsNotify/{phonenum}")
-    public List<String> getSMSNotificationsForCustomer(@PathVariable String phonenum) {
+    public List<String> getSMSNotifications(@PathVariable String phonenum) {
 
-        List<String> SMSNotifications = smsNotificationObserver.getNotifications();
+        List<String> allSMSNotifications = smsNotificationObserver.getNotifications();
         List<String> cutomerSMSnotifications = new ArrayList<>();
-        Customer customer = customerService.getCustomerByPhone(phonenum);
+        Customer customer=customerService.getCustomerByPhone(phonenum);
 
-        if (customer != null) {
-            for (int i = 0; i < notificationsQueue.size(); i++) {
-                String notification = notificationsQueue.poll();
-                if (notification.contains(customer.getEmail())) {
+        if(customer!=null) {
+            while(!notificationsQueue.isEmpty())
+            {
+                String notification=notificationsQueue.poll();
+                if(notification.contains(customer.getEmail()))
+                {
                     cutomerSMSnotifications.add(notification);
                 }
             }
-            notificationsQueue.addAll(SMSNotifications);
+            notificationsQueue.addAll(allSMSNotifications);
         }
 
         return cutomerSMSnotifications;
+
     }
 
     @GetMapping("/emailNotify/{email}")
     public List<String> getEmailNotificationsForCustomer(@PathVariable String email) {
 
-        List<String> EmailNotifications = emailNotificationObserver.getNotifications();
+        List<String> allEmailNotifications = emailNotificationObserver.getNotifications();
         List<String> customerEmailNotifications = new ArrayList<>();
 
-        Customer customer = customerService.getCustomerByEmail(email);
-        if (customer != null) {
-            for (int i = 0; i < notificationsQueue.size(); i++) {
-                String notification = notificationsQueue.poll();
-                if (notification.contains(customer.getEmail())) {
-                    customerEmailNotifications.add(notification);
+        Customer customer=customerService.getCustomerByEmail(email);
+        if(customer!=null) {
+            if(customer!=null) {
+                while(!notificationsQueue.isEmpty())
+                {
+                    String notification=notificationsQueue.poll();
+                    if(notification.contains(customer.getEmail()))
+                    {
+                        customerEmailNotifications.add(notification);
+                    }
                 }
+                notificationsQueue.addAll(allEmailNotifications);
             }
-            notificationsQueue.addAll(EmailNotifications);
+
+            return customerEmailNotifications;
+
         }
 
         return customerEmailNotifications;
