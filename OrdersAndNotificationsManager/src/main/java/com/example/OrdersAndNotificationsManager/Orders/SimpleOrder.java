@@ -39,7 +39,7 @@ public class SimpleOrder implements Order, NotificationSubject {
         this.shippingFee = 50.0;
         this.status = OrderStatus.PLACED;
         this.observers = new ArrayList<>();
-           }
+    }
 
     @Override
     public String placeorder(List<String> ProductName) {
@@ -53,6 +53,8 @@ public class SimpleOrder implements Order, NotificationSubject {
                     addedproducts.add(productName);
                     productFound = true;
                     break;
+
+
                 }
 
             }
@@ -66,11 +68,13 @@ public class SimpleOrder implements Order, NotificationSubject {
             customer.setBalance(customer.getBalance() - total);
             status = OrderStatus.CONFIRMED;
             String confirmationStatus = "---CONFIRMED---";
+            generateConfirmationMessage();
 
             if (status == OrderStatus.CONFIRMED) {
                 String shippingConfirmationResult = confirmShipping();
                 if (status == OrderStatus.SHIPPED) {
                     confirmationStatus = "---SHIPPED---";
+                    generateshippingmessage();
                 }
                 return "---Confirmed---" +" Purchased products: " + String.join(",", addedproducts) +  ".  Total Deducted Amount: " + total + " \n" +
                         confirmationStatus + shippingConfirmationResult;
@@ -122,7 +126,30 @@ public class SimpleOrder implements Order, NotificationSubject {
             addedProducts.add(product.getName());
         }
 
-        String message= MessageTemplate.generateConfirmationMessage(customer.getEmail(), addedProducts);
+        // Create an instance of ConfirmationMessageTemplate
+        ConfirmationMessageTemplate template = new ConfirmationMessageTemplate();
+
+        // Use the instance method to create the message
+        String message = template.createMessage(customer.getEmail(), addedProducts);
+
+        // Now you can use the message wherever needed
+        notifyObservers(message);
+
+        return message;
+    }
+    public String generateshippingmessage() {
+        List<String> addedProducts = new ArrayList<>();
+        for (Products product : products) {
+            addedProducts.add(product.getName());
+        }
+
+        // Create an instance of ConfirmationMessageTemplate
+        ShipmentMessageTemplate template = new ShipmentMessageTemplate();
+
+        // Use the instance method to create the message
+        String message = template.createMessage(customer.getEmail(), addedProducts);
+
+        // Now you can use the message wherever needed
         notifyObservers(message);
 
         return message;
