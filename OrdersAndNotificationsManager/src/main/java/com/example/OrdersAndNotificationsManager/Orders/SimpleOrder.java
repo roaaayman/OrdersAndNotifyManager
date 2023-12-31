@@ -5,6 +5,8 @@ import com.example.OrdersAndNotificationsManager.Notifications.*;
 import com.example.OrdersAndNotificationsManager.Products.DummyProductList;
 import com.example.OrdersAndNotificationsManager.Products.Products;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,14 @@ public class SimpleOrder implements Order, NotificationSubject {
     private double shippingFee;
     private List<NotificationObserver> observers;
     private OrderStatus status;
+    private boolean iscancelled;
+    private boolean isshippingcancelled;
+    private static int increment=1;
+    private  int orderID;
+
+    private static Duration automatedDuration=Duration.ofSeconds(30);
+    private LocalDateTime Time_of_placement;
+
     public double getShippingFee() {
         return shippingFee;
     }
@@ -29,7 +39,9 @@ public class SimpleOrder implements Order, NotificationSubject {
     public enum OrderStatus {
         PLACED,
         CONFIRMED,
-        SHIPPED
+        SHIPPED,
+        CANCELLED,
+        CANCELLEDSHIPPING
     }
 
     // Constructor
@@ -39,6 +51,12 @@ public class SimpleOrder implements Order, NotificationSubject {
         this.shippingFee = 50.0;
         this.status = OrderStatus.PLACED;
         this.observers = new ArrayList<>();
+        this.orderID=increment++;
+        this.Time_of_placement=LocalDateTime.now();
+    }
+
+    public int getOrderID() {
+        return orderID;
     }
 
     @Override
@@ -76,13 +94,63 @@ public class SimpleOrder implements Order, NotificationSubject {
                     confirmationStatus = "---SHIPPED---";
                     generateshippingmessage();
                 }
-                return "---Confirmed---" +" Purchased products: " + String.join(",", addedproducts) +  ".  Total Deducted Amount: " + total + " \n" +
+                return "---Confirmed---" +" Purchased products: " + String.join(",", addedproducts) +  ".  Total Deducted Amount: " + total +" Order id: "+orderID + " \n"+
                         confirmationStatus + shippingConfirmationResult;
-            } else {
+            } else  {
                 return "Order placed but confirmation failed";
             }
+
         } else {
             return "Not enough balance";
+        }
+    }
+    public List<String> getProductName() {
+        List<String> productNames = new ArrayList<>();
+        for (Products product : products) {
+            productNames.add(product.getName());
+        }
+        return productNames;
+    }
+
+
+    @Override
+    public String cancelorder() {
+        if(iscancelled)
+        {
+            return "order is already cancelled";
+        }
+        LocalDateTime currentTime=LocalDateTime.now();
+        Duration timeSinceOrderPlacement = Duration.between(Time_of_placement, currentTime);
+        if(timeSinceOrderPlacement.compareTo(automatedDuration)<=0) {
+            iscancelled = true;
+            customer.setBalance(customer.getBalance() + calculateTotal());
+            customer.removeSimpleOrder(this);
+            status = OrderStatus.CANCELLED;
+            generateCancellationMessage();
+            return "order is cancelled , check your refund";
+        }
+        else {
+            return"you cannot cancel your order now";
+        }
+    }
+
+    @Override
+    public String cancelShipping() {
+        if(isshippingcancelled)
+        {
+            return "shipping of that order is already cancelled";
+        }
+        LocalDateTime currentTime=LocalDateTime.now();
+        Duration timeSinceOrderPlacement = Duration.between(Time_of_placement, currentTime);
+        if(timeSinceOrderPlacement.compareTo(automatedDuration)<=0) {
+            isshippingcancelled = true;
+            customer.setBalance(customer.getBalance() + shippingFee);
+            status = OrderStatus.CANCELLEDSHIPPING;
+            generateShippingCancellationMessage();
+            return "shipping is cancelled check your refund";
+        }
+        else {
+            return "you cannot cancel your shipping now";
         }
     }
 
@@ -121,16 +189,25 @@ public class SimpleOrder implements Order, NotificationSubject {
         return orderDetails+totalamount_shipping;
     }
     public String generateConfirmationMessage() {
-        List<String> addedProducts = new ArrayList<>();
-        for (Products product : products) {
-            addedProducts.add(product.getName());
-        }
 
         // Create an instance of ConfirmationMessageTemplate
         ConfirmationMessageTemplate template = new ConfirmationMessageTemplate();
 
         // Use the instance method to create the message
-        String message = template.createMessage(customer.getEmail(), addedProducts);
+        String message = template.createMessage(customer.getEmail(), this);
+
+        // Now you can use the message wherever needed
+        notifyObservers(message);
+
+        return message;
+    }
+    public String generateCancellationMessage() {
+
+        // Create an instance of ConfirmationMessageTemplate
+        CancellationMessageTemplate template = new CancellationMessageTemplate();
+
+        // Use the instance method to create the message
+        String message = template.createMessage(customer.getEmail(), this);
 
         // Now you can use the message wherever needed
         notifyObservers(message);
@@ -138,22 +215,32 @@ public class SimpleOrder implements Order, NotificationSubject {
         return message;
     }
     public String generateshippingmessage() {
-        List<String> addedProducts = new ArrayList<>();
-        for (Products product : products) {
-            addedProducts.add(product.getName());
-        }
 
         // Create an instance of ConfirmationMessageTemplate
         ShipmentMessageTemplate template = new ShipmentMessageTemplate();
 
         // Use the instance method to create the message
-        String message = template.createMessage(customer.getEmail(), addedProducts);
+        String message = template.createMessage(customer.getEmail(), this);
 
         // Now you can use the message wherever needed
         notifyObservers(message);
 
         return message;
     }
+    public String generateShippingCancellationMessage() {
+
+        // Create an instance of ConfirmationMessageTemplate
+        ShipmentCancellationMessageTemplate template = new ShipmentCancellationMessageTemplate();
+
+        // Use the instance method to create the message
+        String message = template.createMessage(customer.getEmail(), this);
+
+        // Now you can use the message wherever needed
+        notifyObservers(message);
+
+        return message;
+    }
+
 
 
     @Override

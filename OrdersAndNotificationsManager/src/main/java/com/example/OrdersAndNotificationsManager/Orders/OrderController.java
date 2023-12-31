@@ -49,8 +49,41 @@ public class OrderController {
 
         return result;
     }
+    @PostMapping("/cancel")
+    public String cancelOrder(@RequestParam String email, @RequestParam int OrderID) {
+        // Check if the customer exists
+        Customer customer = customerService.getCustomerByEmail(email);
+        if (customer == null) {
+            return "email not available";
+        }
+        SimpleOrder simpleOrder = customer.getSimpleOrderById(OrderID);
+        simpleOrder.attachObservers(smsObserver, emailObserver);
 
-// API endpoint to place a compound order
+        if(simpleOrder!=null)
+        {
+            return simpleOrder.cancelorder();
+        }
+        return "order is not available";
+    }
+
+    @PostMapping("/cancelShip")
+    public String cancelShip(@RequestParam String email, @RequestParam int OrderID) {
+        // Check if the customer exists
+        Customer customer = customerService.getCustomerByEmail(email);
+        if (customer == null) {
+            return "email not available";
+        }
+        SimpleOrder simpleOrder = customer.getSimpleOrderById(OrderID);
+        simpleOrder.attachObservers(smsObserver, emailObserver);
+
+        if(simpleOrder!=null)
+        {
+            return simpleOrder.cancelShipping();
+        }
+        return "order is not available";
+    }
+
+    // API endpoint to place a compound order
     @PostMapping("/compound")
     public List<String> placeCompoundOrder(
             @RequestParam String customerEmail,

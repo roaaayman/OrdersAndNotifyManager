@@ -2,14 +2,13 @@ package com.example.OrdersAndNotificationsManager.Notifications;
 
 import com.example.OrdersAndNotificationsManager.Orders.SimpleOrder;
 
-import java.util.List;
+public class ShipmentCancellationMessageTemplate implements MessageTemplateStrategy{
 
-public class ShipmentMessageTemplate implements MessageTemplateStrategy {
     @Override
     public String createMessage(String customerName, SimpleOrder order) {
-        String messageTemplate = "Dear {x}, your shipment of the items {y} is on its way. Thank you for shopping with us!";
+        String messageTemplate = "Dear {x}, your Shipment cancellation of order with ID {y} is confirmed. Thanks for using our store :)";
         String personalizedMessage = messageTemplate.replace("{x}", customerName)
-                .replace("{y}", String.join(",", order.getProductName()));
+                .replace("{y}",String.valueOf(order.getOrderID()));
 
         return personalizedMessage;
     }
